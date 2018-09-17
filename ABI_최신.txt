@@ -1,0 +1,43 @@
+* sublime 이나 npp 로 볼것 
+
+2018-09-17
+
+creator.sol 
+	
+	- 주소 : 아직 배포하지 않음 
+
+	- ABI : 아직 미완성임 
+		
+
+	- 함수 설명 : 
+		
+
+	    function fetchGames(uint page) public returns (address[10] list)
+	    	- 클라이언트에서 페이지값 (1,2,3 ...) 을 넘기면 해당 페이지에 있는 10개의 개설된 게임 주소를 가져온다. 
+	    
+	    function createGame(uint mapid,  uint playermin, uint playermax, uint wait) public returns ()
+	    	- 맵 id 와 최소인원 충족 후 대기 시간을 지정해서 넘기면 게임 컨트랙트를 생성한다. 
+	        - 주소 반환 기능은 추후 추가함
+	        
+	    
+	    function fetchMaps(uint page) public returns (uint[10][3][] ary)
+	    	- 클라이언트에서 페이지값(1,2,3..)을 넘기면 맵의 정보를 10개씩 가져온다. 
+	    	- 구조는 
+	    		[
+		    		[
+		    			[mapwidth,mapheight,playermin,playermax,dicemin,dicemax],
+		    			[11111111...11,10000000000...0001,1000000011..11, ....],// 벽정보
+		    			[20000,30000,50000,120000,.....] // 
+		    		],
+		    		[
+		    			[mapwidth,mapheight,playermin,playermax,dicemin,dicemax],
+		    			[11111111...11,10000000000...0001,1000000011..11, ....],// 벽정보
+		    			[20000,30000,50000,120000,.....] // 
+		    		],
+		    		... 10개 
+	    		]
+	    	- 현재  solidity 는 struct 반환이 안되기 때문에 이게 최선  	
+
+	    function createMap(uint width, uint height,uint dicemin, uint dicemax, uint[] walls, uint[] prices) public returns (uint id){
+	        - 너비 높이 주사위 최소 최대 벽위치 각 땅 가격을 넘기면 해당하는 맵을 생성한다. 
+	    	
