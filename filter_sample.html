@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://github.com/ethereum/web3.js/blob/develop/dist/web3.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+      <script src="https://github.com/MikeMcl/bignumber.js/blob/master/bignumber.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+
+       
+
+
+            if( typeof web3 !== 'undefined'){
+                web3 = new Web3(web3.currentProvider);
+
+            }else{
+                web3 = new Web3(Web3.providers.HttpProvider());
+            }
+            var account0 = web3.eth.accounts[0]
+
+
+            $("#btn1").on('click',function(){
+
+
+
+                var abi = [ { "constant": false, "inputs": [ { "name": "mapid", "type": "uint256" }, { "name": "wait", "type": "uint256" } ], "name": "createGame", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [ { "name": "width", "type": "uint256" }, { "name": "height", "type": "uint256" }, { "name": "playermin", "type": "uint256" }, { "name": "playermax", "type": "uint256" }, { "name": "dicemin", "type": "uint256" }, { "name": "dicemax", "type": "uint256" }, { "name": "walls", "type": "uint256[]" }, { "name": "prices", "type": "uint256[]" } ], "name": "createMap", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "anonymous": false, "inputs": [ { "indexed": true, "name": "id", "type": "uint256" }, { "indexed": true, "name": "owner", "type": "address" }, { "indexed": true, "name": "addr", "type": "address" } ], "name": "creation", "type": "event" }, { "inputs": [], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "constant": true, "inputs": [], "name": "aaa", "outputs": [ { "name": "a", "type": "uint256[]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "page", "type": "uint256" } ], "name": "fetchGames", "outputs": [ { "name": "list", "type": "address[10]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "id", "type": "uint256" } ], "name": "fetchMap", "outputs": [ { "name": "info", "type": "uint256[6]" }, { "name": "walls", "type": "uint256[]" }, { "name": "prices", "type": "uint256[]" } ], "payable": false, "stateMutability": "view", "type": "function" } ];
+                var contract = web3.eth.contract(abi);
+
+
+                var address = "0x7ca7a64b11deb031c410ae85e0c234cb2bcfb388";
+
+                var contract = contract.at(address);
+
+                contract.createGame(3,3,function(){});
+
+                var event = contract.creation();
+
+
+                // my addr 0x229dae485c553355e1d6da1180337b4809882092
+
+                var options = {
+                    "address" :  address 
+                }
+
+                var filter = web3.eth.filter(options);
+                // watch for changes
+                filter.watch(function(error, result){
+                 if (!error)
+                   console.log(result);
+                });
+
+            })
+
+            
+
+        })
+    </script>
+
+
+
+</head>
+<body>
+<input id="btn1" type="button" value="create"></input>
+<input id="btn2" type="button" value="create"></input>
+<input id="btn3" type="button" value="create"></input>
+
+</body>
+</html>

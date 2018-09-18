@@ -40,3 +40,19 @@ creator.sol
 	    function createMap(uint width, uint height,uint dicemin, uint dicemax, uint[] walls, uint[] prices) public returns (){
 	        - 너비 높이 주사위 최소 최대 벽위치 각 땅 가격을 넘기면 해당하는 맵을 생성한다. 
 	    	- 맵 id 반환 기능은 추후 추가함
+
+
+
+2018-09-18 
+
+creator.sol 
+
+	
+	- 업데이트 : createGame 함수를 실행시 creation event 를 발생시킴 web3의 필터를 통해 생성된 게임컨트랙트를 받을 수 있음 
+	
+	- 주소 : 0x7ca7a64b11deb031c410ae85e0c234cb2bcfb388
+
+	- ABI : [ { "constant": false, "inputs": [ { "name": "mapid", "type": "uint256" }, { "name": "wait", "type": "uint256" } ], "name": "createGame", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [ { "name": "width", "type": "uint256" }, { "name": "height", "type": "uint256" }, { "name": "playermin", "type": "uint256" }, { "name": "playermax", "type": "uint256" }, { "name": "dicemin", "type": "uint256" }, { "name": "dicemax", "type": "uint256" }, { "name": "walls", "type": "uint256[]" }, { "name": "prices", "type": "uint256[]" } ], "name": "createMap", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "anonymous": false, "inputs": [ { "indexed": true, "name": "id", "type": "uint256" }, { "indexed": true, "name": "owner", "type": "address" }, { "indexed": true, "name": "addr", "type": "address" } ], "name": "creation", "type": "event" }, { "inputs": [], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "constant": true, "inputs": [], "name": "aaa", "outputs": [ { "name": "a", "type": "uint256[]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "page", "type": "uint256" } ], "name": "fetchGames", "outputs": [ { "name": "list", "type": "address[10]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "id", "type": "uint256" } ], "name": "fetchMap", "outputs": [ { "name": "info", "type": "uint256[6]" }, { "name": "walls", "type": "uint256[]" }, { "name": "prices", "type": "uint256[]" } ], "payable": false, "stateMutability": "view", "type": "function" } ]
+		
+		
+
