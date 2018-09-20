@@ -81,7 +81,7 @@ creator.sol
 
 			실패시  StartFail 이벤트 발생 
 
-		function view()
+		function viewBoard()
 			
 			DiceGen 이벤트가 발생하고 나서부터 호출할 수 있다. 
 
@@ -107,6 +107,9 @@ creator.sol
 
 
 
+			총 다섯개의 배열을 반환함 
+
+				[[],[],[],[],[]]
 
 		function join()
 		 	
@@ -149,13 +152,24 @@ creator.sol
 
     - 이벤트 :    
 	    
-	    event DiceGen();
-	    	- 주사위가 생성되었음을 의미 	
-	    	- 이때 이후로 getDice() 호출 가능
+	    event는 하나로 통일함 
 
-	    event JoinResult(bool indexed tf);
-	    	- join() 을 호출하고 성공 실패 여부를 반환 
-		     	
-	    event ActionResult(bool indexed tf);	
+	    event GameEvent(uint indexed type_,address indexed addr);
+	    
+	    아래의 각 상황에서 날라오는 토픽, web3의 filter를 통해 잡고자 하는 이벤트만 골라잡으면 된다. ( 필터 샘플 참고 )
 
-	    event StartFail();
+	        Dicegen = 0 , address(this)
+	        
+	        StartFail = 1 , address(this)
+	        
+	        JoinSuccess = 2 , playeraddr
+	        
+	        JoinFail = 3 , playeraddr 
+	        
+	        MoveSuccess = 5, playeraddr
+	        
+	        MoveFail = 6 , playeraddr
+	    
+	        
+	        
+	    
