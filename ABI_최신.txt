@@ -65,3 +65,97 @@ creator.sol
  	- 주소 : 0xa0bb1671d29fee1baeeb2383fd592d1b7ca37cf4
 
  	- ABI : [ { "constant": false, "inputs": [ { "name": "mapid", "type": "uint256" }, { "name": "wait", "type": "uint256" } ], "name": "createGame", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [ { "name": "width", "type": "uint256" }, { "name": "height", "type": "uint256" }, { "name": "playermin", "type": "uint256" }, { "name": "playermax", "type": "uint256" }, { "name": "dicemin", "type": "uint256" }, { "name": "dicemax", "type": "uint256" }, { "name": "walls", "type": "uint256[]" }, { "name": "prices", "type": "uint256[]" } ], "name": "createMap", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "anonymous": false, "inputs": [ { "indexed": true, "name": "id", "type": "uint256" }, { "indexed": true, "name": "owner", "type": "address" }, { "indexed": true, "name": "addr", "type": "address" } ], "name": "creation", "type": "event" }, { "inputs": [], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "constant": true, "inputs": [], "name": "aaa", "outputs": [ { "name": "a", "type": "uint256[]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "page", "type": "uint256" } ], "name": "fetchGames", "outputs": [ { "name": "list", "type": "address[10]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "id", "type": "uint256" } ], "name": "fetchMap", "outputs": [ { "name": "info", "type": "uint256[6]" }, { "name": "walls", "type": "uint256[]" }, { "name": "prices", "type": "uint256[]" } ], "payable": false, "stateMutability": "view", "type": "function" } ]
+
+
+
+ 2018-09-20
+ 
+ Game.sol	
+    
+    - 상태 : 아직 배포 안됨 함수와 이벤트 리스트만 작성함 
+
+	- 함수 
+		function start()
+
+			방장이 날리는 명령, 시작이 성공하면 DiceGen 이벤트 발생 
+
+			실패시  StartFail 이벤트 발생 
+
+		function view()
+			
+			DiceGen 이벤트가 발생하고 나서부터 호출할 수 있다. 
+
+			아래의 세 배열은 플레이어의 들어온 순서를 인덱스로 한다. 0<=x<(총플레이어수)
+
+				플레이어 주소 목록 
+					[0x... , 0x.... , ...]
+
+				플레이어 현금 목록 
+					[10000, 200000, 30000, ...]
+
+				플레이어 위치 목록 
+					[[2,3],[2,5],[11,20],...]
+
+
+			아래의 두 배열은 땅의 아이디 0<=x<(땅의 갯수) 를 인덱스로 한다. 
+
+				땅의 소유자 목록
+					[0x... ,0x ... , 0x....]
+
+				땅의 빌딩수 목록 
+					[2,3,0,0,0,0,3,1,3,.....]
+
+
+
+
+		function join()
+		 	
+		 	msg.sender를 참여 시킴 
+
+		 	최대인원 초과 등의 이유로 실패시 JoinResult(false) event 발생 
+
+		 	성공시 JoinResult(true) event 발생 
+
+
+		function action(uint8[] actionids, uint[] params) public
+
+			실행할 명령들의 모음을 보내고 성공 실패 이벤트를 발생시킴
+
+				성공시 ActionResult(true); 
+
+			명령 모음 : 
+
+				좌 , 상 , 우 , 하 = 1 , 2 , 3 , 4 
+
+					params : 1~dicemax 사이의 숫자 
+
+					이동 명령의 총합이 항상 받은 dice의 값과 같거나 커야함 더 클시 이동하다 멈춤 
+
+					이동은 항상 온 방향과는 다른 방향이어야함 즉 오른쪽으로 갔다가 왼쪽으로 가기 위쪽으로 갔다가 아래쪽으로 가기 는 안됨  
+
+				5 : 입찰 
+
+					params : 1~보유 현금 사이의 숫자 
+
+				6 : 매각 
+
+					params : 땅의 id (1~총 땅 갯수)
+
+				7 : 짓기 
+
+					params : 갯수(1~5) 
+		 	
+					- 현재는 한가지 부동산만 지원 
+
+    - 이벤트 :    
+	    
+	    event DiceGen();
+	    	- 주사위가 생성되었음을 의미 	
+	    	- 이때 이후로 getDice() 호출 가능
+
+	    event JoinResult(bool indexed tf);
+	    	- join() 을 호출하고 성공 실패 여부를 반환 
+		     	
+	    event ActionResult(bool indexed tf);	
+
+	    event StartFail();
