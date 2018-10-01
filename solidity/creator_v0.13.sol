@@ -8,28 +8,8 @@ contract Game is usingOraclize {
     constructor(uint id_) public{
         id = id_;
     }
-    
-    
-   string public ETHUSD;
-   event LogConstructorInitiated(string nextStep);
-   event LogPriceUpdated(string price);
-   event LogNewOraclizeQuery(string description);
+  
 
-   function __callback(bytes32 myid, string result) {
-       if (msg.sender != oraclize_cbAddress()) revert();
-       ETHUSD = result;
-       LogPriceUpdated(result);
-   }
-
-   function updatePrice() payable {
-       if (oraclize_getPrice("URL") > this.balance) {
-           LogNewOraclizeQuery("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
-       } else {
-           LogNewOraclizeQuery("Oraclize query was sent, standing by for the answer..");
-           oraclize_query("URL", "json(https://api.gdax.com/products/ETH-USD/ticker).price");
-       }
-   }
-    
 }
 
 

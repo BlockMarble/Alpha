@@ -233,8 +233,76 @@ creator.sol
 
 
 
-	Creator.sol
+	Creator_v0.13.sol
 
 		- 주소 : 0x046840ac74cb87b1eb04c3b683ef9ed7258ce858
 
 		- ABI : [ { "constant": false, "inputs": [ { "name": "mapid", "type": "uint256" }, { "name": "wait", "type": "uint256" } ], "name": "createGame", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [ { "name": "page", "type": "uint256" } ], "name": "fetchGames", "outputs": [ { "name": "list", "type": "address[10]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "aaa", "outputs": [ { "name": "a", "type": "uint256[]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [ { "name": "width", "type": "uint256" }, { "name": "height", "type": "uint256" }, { "name": "playermin", "type": "uint256" }, { "name": "playermax", "type": "uint256" }, { "name": "dicemin", "type": "uint256" }, { "name": "dicemax", "type": "uint256" }, { "name": "walls", "type": "uint256[]" }, { "name": "prices", "type": "uint256[]" } ], "name": "createMap", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [ { "name": "id", "type": "uint256" } ], "name": "fetchMap", "outputs": [ { "name": "info", "type": "uint256[6]" }, { "name": "walls", "type": "uint256[]" }, { "name": "prices", "type": "uint256[]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "inputs": [], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": true, "name": "id", "type": "uint256" }, { "indexed": true, "name": "owner", "type": "address" }, { "indexed": true, "name": "addr", "type": "address" } ], "name": "creation", "type": "event" } ]
+
+
+	Creator_v0.14.sol
+
+		- 주소 : 0xECAa98250ED94E16c10a86467F609998De2B1abA
+
+		- ABI : [ { "constant": false, "inputs": [], "name": "creatBasicGame", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [ { "name": "mapid", "type": "uint256" }, { "name": "wait", "type": "uint256" } ], "name": "createGame", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [ { "name": "width", "type": "uint8" }, { "name": "height", "type": "uint8" }, { "name": "playermin", "type": "uint8" }, { "name": "playermax", "type": "uint8" }, { "name": "dicemin", "type": "uint8" }, { "name": "dicemax", "type": "uint8" }, { "name": "walls_", "type": "uint256[]" }, { "name": "prices_", "type": "uint32[]" } ], "name": "createMap", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "anonymous": false, "inputs": [ { "indexed": true, "name": "requester", "type": "address" }, { "indexed": true, "name": "_type", "type": "uint256" }, { "indexed": true, "name": "value", "type": "uint256" } ], "name": "CreatorEvent", "type": "event" }, { "inputs": [], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "constant": true, "inputs": [ { "name": "page", "type": "uint256" } ], "name": "fetchGames", "outputs": [ { "name": "list", "type": "address[10]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "id", "type": "uint256" } ], "name": "fetchMap", "outputs": [ { "name": "info_", "type": "uint8[6]" }, { "name": "walls_", "type": "uint256[]" }, { "name": "prices_", "type": "uint32[]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "viewNumGames", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "viewNumMaps", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" } ]
+
+
+		- 시간조건을 제외한 기본적인 기능은 모두 실제 구현 된 상태 ! 
+
+		- Game_v0.15.sol과 연동되어 있다. 
+
+		- event: 
+			이벤트의 시그니처는 
+
+			0xc19442a910aef435ef1b0a1e5efbbf53c422c88ff36b025627b3d70cd4c6db03
+
+			filter 설정시에 이벤트 시그니처는 null로 설정해도 상관 없다. 어차피 한시그니처의 이벤트만 발생하기 때문
+
+			CreatorEvent(address sender,uint type,uint val)
+
+			- 첫번째 토픽은 항상 시그니처 
+			- 두번째 토픽 (첫번째 인자)는 요청자의 주소이다. 
+			- 세번째 토픽 (두번째 인자)는 이벤트 종류이다.
+			- 네번째 토픽 (세번째 인자)는 값이다. 주소가 될수도 정수id 가 될수도 있다.
+
+
+		- 함수 : 	
+
+			function creatBasicGame() public
+				: 테스트 목적으로 하나의 게임을 생성한다. 이 게임은 다음과 같은 맵을 사용한다. 
+					1111111111
+					1000100001
+					1000100001
+					1000111111
+					1000100001
+					1000100001
+					1111100001
+					1000000001
+					1000000001
+					1111111111
+
+		    function createGame(uint mapid, uint wait) public {
+		    	: 게임을 생성한다. 맵 id 와 대기시간을 입력한다. 대기시간은 현재 아무 작동은 안한다.
+
+		    	: 성공시에 CreatorEvent(송신자주소,1,uint256(게임주소)) 를 반환한다.
+		    		- 정확한 주소값이 아닌 uint 변환 값을 반환한다. 
+		    		- 실제 필터에서 받아올 때의 차이는 없다 어차피 uint256로 바꾸기 때문 
+				
+			function createMap(uint8 width, uint8 height, uint8 playermin, uint8 playermax, uint8 dicemin, uint8 dicemax, uint[] walls_, uint32[] prices_) public
+		    	:  맵을 생성한다. 
+
+		    	: 성공시에 CreatorEvent(송신자주소,3,맵아이디) 를 반환한다. 
+
+		    function fetchMap(uint id) public view returns (uint8[6] info_,uint[] walls_,uint32[] prices_){
+		    	: 맵 id 를 넣고 맵정보를 가져온다.
+
+		    function fetchGames(uint page) public view returns (address[10] list){
+		    	: page 를 입력하면 page*10 번째부터 페이지* 
+		    		(빈 주소는 0x000....000 을 반환한다.)
+
+		    function viewNumGames() public view returns (uint){
+		    	: 총 몇개의 게임이 개설되어 있는지 가져온다. 
+
+		    function viewNumMaps() public view returns (uint){
+    			: 총 몇개의 맵이 개설되어 있는지 가져온다. 
+
