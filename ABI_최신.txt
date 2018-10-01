@@ -173,3 +173,63 @@ creator.sol
 	        
 	        
 	    
+
+2018-10-01
+	
+	Game.sol
+
+		주소 : 0x486e3b36e739c3d059175947b5e7a8b467cebdb9
+
+
+		ABI : [ { "anonymous": false, "inputs": [ { "indexed": true, "name": "type_", "type": "uint256" }, { "indexed": true, "name": "addr", "type": "address" } ], "name": "GameEvent", "type": "event" }, { "constant": false, "inputs": [ { "name": "actionids", "type": "uint8[]" }, { "name": "params", "type": "uint256[]" } ], "name": "action", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [ { "name": "actionids", "type": "uint8[]" }, { "name": "params", "type": "uint256[]" }, { "name": "sender", "type": "address" } ], "name": "action_i", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [], "name": "join", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [ { "name": "sender", "type": "address" } ], "name": "join_i", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [], "name": "start", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [], "name": "sum_moves_i", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "constant": true, "inputs": [ { "name": "", "type": "address" } ], "name": "addrids", "outputs": [ { "name": "", "type": "uint8" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" }, { "name": "", "type": "uint256" } ], "name": "board", "outputs": [ { "name": "", "type": "uint16" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "built", "outputs": [ { "name": "", "type": "uint16" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "address" } ], "name": "camefroms", "outputs": [ { "name": "", "type": "uint8" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "address" } ], "name": "cashes", "outputs": [ { "name": "", "type": "uint32" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "address" } ], "name": "dices", "outputs": [ { "name": "", "type": "uint8" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "highest_bid", "outputs": [ { "name": "", "type": "uint32" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "highest_bidder", "outputs": [ { "name": "", "type": "address" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "numDone", "outputs": [ { "name": "", "type": "uint8" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "owners", "outputs": [ { "name": "", "type": "address" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "address" }, { "name": "", "type": "uint256" } ], "name": "poses", "outputs": [ { "name": "", "type": "uint8" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "prices", "outputs": [ { "name": "", "type": "uint32" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "v_dices", "outputs": [ { "name": "dices_", "type": "uint8[]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "v_prices", "outputs": [ { "name": "", "type": "uint32[]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "i", "type": "uint256" } ], "name": "v_viewrow", "outputs": [ { "name": "", "type": "uint16[]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "viewBoard", "outputs": [ { "name": "players_", "type": "address[]" }, { "name": "cashes_", "type": "uint256[]" }, { "name": "poses_", "type": "uint8[2][]" }, { "name": "owners_", "type": "address[]" }, { "name": "buidings_", "type": "uint16[]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "viewGame", "outputs": [ { "name": "", "type": "uint8" }, { "name": "", "type": "uint8" }, { "name": "", "type": "uint256[]" }, { "name": "", "type": "uint32[]" } ], "payable": false, "stateMutability": "view", "type": "function" } ]
+
+
+		함수 목록 
+
+			- 실사용 목적 
+
+				function start() public 
+					- 호출시 게임 시작 첫번째 주사위 생성 
+					- 현재 아무나 아무시점에 (최소인원 충족 상관 없이) 호출하면 현재의 인원만 가지고 게임 시작
+
+				function join() public 
+					- msg.sender를 게임에 참가시킴 
+
+						GameEvent(2,<msg.sender 주소>)
+						혹은  
+						GameEvent(3,<msg.sender 주소>)
+						을 각각 성공 실패시 발생시킴 
+
+				function action(uint8[] actionids, uint[] params) public
+					- 수행할 액션을 보냄 		
+
+						GameEvent(4,<msg.sender 주소>)
+						혹은  
+						GameEvent(5,<msg.sender 주소>)
+						을 각각 성공 실패시 발생시킴
+
+				function viewBoard() public view returns(address[] players_,uint[] cashes_, uint8[2][] poses_, address[] owners_ ,uint16[] buidings_)
+					-보드의 상태를 반환함 
+
+				function viewGame() public view returns(uint8 N,uint8 M,uint[] walls,uint32[] prices)	
+					- 보드의 정적인 정보를 반환함, 벽위치, 가격목록
+					- 벽정보는 이진수로 해석해야함 
+
+
+
+
+
+			- 테스트 목적 			
+
+				테스트 목적의 함수들 중 아래의 두 함수는 보내는 플레이어 주소를 조작할 수 있게 해준다. 실제로 여러 메타마스크 계정을 번갈아가면서 테스트하지 않아도 되게 해준다. 실제 존재하지 않는 아무 주소값을 넘겨도 된다.
+
+					join_i : 주소를 인자로 넘기면 그 주소의 플레이어가 참여하고자 하는 것으로 여긴다.
+
+					action_i : action의 마지막 인자로 주소값을 보내면 그 주소의 플레이어가 수행명령을 내린것으로 간주한다.  
+
+				아래의 테스트함수들은 게임을 실제보다 더 신속하게 진행시켜 테스트하기 위함이다. 
+					
+					function sum_moves_i() public : 강제로 모든 수행명령이 집계된다. 명령이 수행명령을 날리지 않은 플레이어는 디폴트 동작을 수행하게 된다. 현재 디폴트 동작은 주사위가 나온칸만큼 아무 방향으로나 이동하고, 주인없는 땅에 대한 bid 는 진행하지 않으며, fee 로 내야할 돈이 부족할 시 id 가 낮은 소유지부터 매각하여 돈을 충당한다. 자동으로 다음턴의 주사위도 생성한다. 
+
+
+

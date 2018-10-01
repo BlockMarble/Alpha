@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://github.com/ethereum/web3.js/blob/develop/dist/web3.min.js"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='bignumber.min.js') }}"></script>
+    <script src="https://github.com/MikeMcl/bignumber.js/blob/master/bignumber.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+
+       
+
+
+            if( typeof web3 !== 'undefined'){
+                web3 = new Web3(web3.currentProvider);
+
+            }else{
+                web3 = new Web3(Web3.providers.HttpProvider());
+            }
+            var account0 = web3.eth.accounts[0]
+
+
+            $("#btn1").on('click',function(){
+
+
+
+                var abi = [ { "constant": true, "inputs": [ { "name": "i", "type": "uint256" } ], "name": "v3", "outputs": [ { "name": "", "type": "int32[]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "i", "type": "uint256" } ], "name": "v2", "outputs": [ { "name": "", "type": "int32[]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" }, { "name": "", "type": "uint256" } ], "name": "board", "outputs": [ { "name": "", "type": "int32" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "i", "type": "uint256" } ], "name": "v1", "outputs": [ { "name": "", "type": "int32[]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [], "name": "join", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [], "name": "start", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "v4", "outputs": [ { "name": "dices_", "type": "uint8[]" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "inputs": [], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": true, "name": "type_", "type": "uint256" }, { "indexed": true, "name": "addr", "type": "address" } ], "name": "GameEvent", "type": "event" } ];
+                var contract = web3.eth.contract(abi);
+
+
+                var address = "0xe7c7eaed28486d4511c04a2647e91a9901be8c97";
+
+                var contract = contract.at(address);
+
+                // my addr 0x229dae485c553355e1d6da1180337b4809882092
+
+                contract.join(function(){
+                    console.log("oooo");
+                })
+
+                var options = {
+                    "address" :  address 
+                }
+
+                var filter = web3.eth.filter(options);
+                // watch for changes
+                filter.watch(function(error, result){
+                console.log(" address watcher ");
+                if (!error){
+                    console.log(result);
+                }else{
+                    console.log("error !!");
+                }
+
+                });
+
+                var options01 = {
+                    "address" :  address,
+                    "topics" : [
+                    null,
+                    "0x0000000000000000000000000000000000000000000000000000000000000002"]
+                }
+
+                var filter01 = web3.eth.filter(options01);
+                // watch for changes
+                filter01.watch(function(error, result){
+                if (!error)
+                    console.log(" topic 002 watcher ")
+                    console.log(result);
+                });
+
+                var options02 = {
+                    "address" :  address,
+                    "topics" : [
+                    null,
+                    "0x0000000000000000000000000000000000000000000000000000000000000003"]
+                }
+
+                var filter02 = web3.eth.filter(options02);
+                // watch for changes
+                filter02.watch(function(error, result){
+                if (!error)
+                    console.log(" topic 003 watcher ")
+                    console.log(result);
+                });                
+
+            })
+
+            
+
+        })
+    </script>
+
+
+
+</head>
+<body>
+<input id="btn1" type="button" value="create"></input>
+<input id="btn2" type="button" value="create"></input>
+<input id="btn3" type="button" value="create"></input>
+
+</body>
+</html>
