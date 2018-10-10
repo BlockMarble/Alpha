@@ -1,0 +1,42 @@
+
+
+Contract & web3 interface
+
+	베이직 룰 컨트랙트 구현 
+
+	베이직 룰 web3 interface 구현 
+
+	special event 컨트랙트 구현
+
+	special event web3 interface 구현 
+
+
+
+View 
+	
+	CreatMap page
+
+	ViewMaps page
+
+		- create game
+
+	
+	ViewGames page
+
+		- join game
+
+		
+
+	Ingame page
+
+		- roll dice
+
+		- move
+
+		- bid
+
+		- sell 
+
+		- build
+
+
