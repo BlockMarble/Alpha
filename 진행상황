@@ -1,4 +1,19 @@
+이남호  
+	
+	web3 라이브러리 인터페이스 완성 
 
+조상훈 
+
+	웹 페이지 캐릭터 움직임 구현
+
+양흥형
+
+	유저 인터페이스 작업 
+
+
+
+
+--
 
 Contract & web3 interface
 
@@ -13,8 +28,6 @@ Contract & web3 interface
 
 
 View 
-	
-	CreatMap page
 
 	ViewMaps page
 
@@ -24,7 +37,6 @@ View
 	ViewGames page
 
 		- join game
-
 		
 
 	Ingame page
