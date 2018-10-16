@@ -33,7 +33,12 @@ var chain_interface = {};
 
 var maps = [];
 var games = {};
-function short(addr){if(addr.length == 8) return addr; return addr.substr(2,8);}
+var gameArray = [];
+
+function short(addr){
+	if(shortToLong[addr]) return addr;
+	return addr.substr(2,8);
+}
 function genRandAddr(){	var addr = randAddrs[randAddrUsed];	randAddrUsed++;	return addr;}
 
 var realAddr = genRandAddr();
@@ -44,23 +49,70 @@ var game = null;
 var players = {};
 var lands = [];
 
-function genDices(){
-	for(k in players){
-		players[k].dice = Math.floor(game.diceMin+Math.random()*(game.diceMax-game.diceMin+0.9999));		
-	}
-}
+function genDice(){ return Math.floor(game.diceMin+Math.random()*(game.diceMax-game.diceMin+0.9999));}
 
 function joinAndInitPlayer(addr,game){
-	var players_ = players;
+	var players_ = null;
 	if(game){
 		players_ = game.players;
+	}else{
+		players_ = players;
 	}
 
 	var player = {};
+	player.addr = addr;
 	player.prevDir = "none";
 	player.pos = [0,0];
 	player.cash = 100000;
+	player.owns = {};
+
 	players_[short(addr)] = player;
+}
+
+function makeOwnRelation(){
+
+}
+function removeOwnRelation(player,land){
+	land.owner = null;
+	delete player.owns[''+land.x+'_'+land.y];
+}
+
+function liquidateVal(land){
+	return land.price + land.buildings * land.price * 0.1;
+}
+
+function liquidate(addr,target){
+	var player = players[short(addr)];
+	var owns = player.owns;
+	for(let k in owns){
+		let xy = k.match(/\d+/g);
+		let land = lands[parseInt(xy[1])][parseInt(xy[0])];
+		removeOwnRelation(player,land);
+		player.cash += liquidateVal(land);
+		if(player.cash >= target){
+			break;
+		}
+	}
+}
+
+function build_i(player,posX,posY,num){
+	var land = lands[posY][posX];
+
+	if(land && land.owner == player.addr && player.cash >= 1000*num){
+		player.cash -= 1000*num;
+		land.buildings += num; 
+	}else{
+		console.log("build attempt invalid")	
+	}
+}
+
+
+function bid_i(player,money){
+	var land = lands[player.pos[1]][player.pos[0]];
+	if(land.greatestBid<money){
+		land.greatestBidder = player.addr;
+		land.greatestBid = money;
+	} 
 }
 
 
@@ -81,20 +133,17 @@ function automove(addr){
 		for(let i = 0 ; i < 4 ; i ++){
 
 			let move = moves[i];
-			let posX1 = pos[0]+move[0]; 	
-			let posY1 = pos[1]+move[1];
+			let pos0_new = pos[0]+move[0]; 	
+			let pos1_new = pos[1]+move[1];
 
 			if( 
 				i != counderMoveId[prevMoveId] 
-				&& posX1>=0 && posX1< game.width && posY1>=0 && posY1<game.height 
-				&& game.walls[posY1][posX1] != 0
+				&& pos0_new>=0 && pos0_new< game.width && pos1_new>=0 && pos1_new<game.height 
+				&& game.walls[pos1_new][pos0_new] != 0
 				){
 
-				console.log(" got : !! : ");
-				console.log(pos);
-
 				prevMoveId = i; 
-				pos = [posX1,posY1];
+				pos = [pos0_new,pos1_new];
 				break;
 			}
 		}
@@ -105,6 +154,28 @@ function automove(addr){
 	player.prevDir = moveIndexToDir[prevMoveId];
 }
 
+function autotrade(addr){
+	var player = players[addr];
+	var pos = player.pos;
+	var land = lands[pos[1]][pos[0]]
+
+	if(Math.random()>0.5 && !land.owner && land.greatestBid+1 <= player.cash ){
+		var bid = land.greatestBid + 1;
+		bid_i(player,bid);
+		console.log(`player[${addr}] bidding ${bid} to land at ${pos[0]}/${pos[1]}`);	
+	}
+
+
+	if(Math.random()>0.5){
+		let owns = player.owns;
+		for(k in owns){
+			if(Math.random()>0.5){
+				let xy = k.match(/\d+/g);
+				//build_i(player,parseInt(xy[0]),parseInt(xy[1]),1);
+			}	
+		}
+	}
+}
 
 	// ["createMap_from_panelId-0",
 chain_interface.createMap = function(width,height,playerMin,playerMax,diceMin,diceMax,walls,prices,callback){
@@ -141,16 +212,18 @@ chain_interface.createGame = function(mapid,callback){
 	games[shortAddr] = {};
 	var map = maps[mapid];
 
-	games[shortAddr].width = map.width;
-	games[shortAddr].height = map.height;
-	games[shortAddr].playerMin = map.playerMin;
-	games[shortAddr].playerMax = map.playerMax;
-	games[shortAddr].diceMin = map.diceMin;
-	games[shortAddr].diceMax = map.diceMax;
-	games[shortAddr].walls = map.walls;
-	games[shortAddr].prices = map.prices;
+
+
+
+	["width","height","playerMin","playerMax","diceMin","diceMax","walls","prices"].forEach(elm=>{
+		games[shortAddr][elm] = map[elm]
+	})
 
 	var game = games[shortAddr];
+	gameArray.push(shortAddr);
+
+
+	game.mapid = mapid;
 
 	game.players = [];
 	game.cashes = {};
@@ -160,7 +233,7 @@ chain_interface.createGame = function(mapid,callback){
 	game.owners = {};
 	game.buildings = {};
 
-
+	players = {};
 	lands = [];
 	for(let i = 0 ; i < map.walls.length ; i++){
 		let row = map.walls[i];
@@ -168,9 +241,13 @@ chain_interface.createGame = function(mapid,callback){
 		for(let j = 0 ; j < row.length ; j ++){
 			if(row[j] != 0){
 				let land = {};
-				land.greatestBid = 0;				
+				land.x = j;
+				land.y = i;
 				land.greatestBidder = null;
+				land.owner = null;
 				land.buildings = 0;
+				land.price = map.prices[j][i];
+				land.greatestBid = land.price;				
 				landsRow[j] = land;
 			}
 		}
@@ -178,7 +255,7 @@ chain_interface.createGame = function(mapid,callback){
 	}
 
 	game.lands = lands;
-	game.players = {};
+	game.players = players;
 
 	joinAndInitPlayer(currentAddr,game);
 
@@ -206,7 +283,7 @@ chain_interface.joinGame = function(addr,callback){
 	// "startGame_panelId-0",
 chain_interface.startGame = function(callback){
 	if(game){
-		genDices();
+		for(k in players) players[k].dice = genDice();
 		callback("success");
 	}else{
 		callback("no game")
@@ -327,12 +404,8 @@ for(k in dirs){
 	// "bid_input_panelId-1",
 chain_interface.bid = function(money,callback){
 	var player = players[short(currentAddr)]; 
-	var land = lands[player.pos[1]][player.pos[0]];
 	if(player.cash >= money){
-		if(land.greatestBid<money){
-			land.greatestBidder = currentAddr;
-			land.greatestBid = money;
-		}
+		bid_i(player,money);	
 	}else{
 		console.log(" ! error : not enough cash ");
 	}
@@ -351,14 +424,15 @@ chain_interface.sell = function(landposX,landposY,callback){
 }
 
 	// "build_input_panelId-1"].forEach(plotInPanel)
+
+
+
 chain_interface.build = function(landposX,landposY,num,callback){
-	var land = lands[landposY][landposX];
 	var player = players[short(currentAddr)]; 	
-	if(land.owner == short(currentAddr) && player.cash >= 1000*num){
-		player.cash -= 1000*num;
-		land.buildings += num; 
+	if(build_i(player,landposX,landposY,num)){
+		callback("success");
 	}else{
-		console.log("invalid")	
+		callback("failed");
 	}	
 };
 
@@ -371,19 +445,43 @@ chain_interface.endTurn = function(callback){
 };
 
 
+function calcFee(x,y){
+	var land = lands[y][x];
+	return land.price*Math.pow(1.1,land.buildings)*0.1;
+}
+
 chain_interface.sum = function(callback){
+	console.log('---------------');
 	var players = game.players;
 
-	console.log(lands);
+	for(k in players){
+		let player = players[k];
+		let landOwner = lands[player.pos[1]][player.pos[0]].owner;
+
+		if( landOwner && short(landOwner) != k ){  //leelang : 그냥 ~.owner is player ? 로 처리하게 한다면 ?
+			let fee = calcFee(player.pos[0],player.pos[1]);
+			if(fee>player.cash && !liquidate(k,fee-player.cash)){
+				console.log("player["+shortToLong[k]+"] has lost the game");
+			}
+
+			console.log(`player ${k} has payed the fee ${fee} to player ${short(landOwner)}`)
+			player.cash -= fee;
+			players[short(landOwner)].cash += fee;
+		}
+	}
+
 
 	for(let i = 0; i < lands.length ; i++){
 		let landRow = lands[i];
 		for(let j = 0; j < landRow.length ; j++){
 			let land = landRow[j];
-			if(land&&!land.owner && land.greatestBid > 0){
+			
+			if(land&&!land.owner && land.greatestBidder){
+				players[short(land.greatestBidder)].owns[`${j}_${i}`] = true;
+				players[short(land.greatestBidder)].cash -= land.greatestBid;
 				land.owner = land.greatestBidder;
 				land.greatestBidder = null;
-				land.greatestBid = null;
+				land.greatestBid = land.price;
 			}
 		}
 	}
@@ -392,23 +490,85 @@ chain_interface.sum = function(callback){
 	for(k in players){
 		if(players[k].dice > 0){
 			automove(k)
+			autotrade(k)
+			players[k].dice = genDice();
 		}
-		console.log(players[k].dice);
 	}
 };
 
 
+chain_interface.viewMapList = function(start,end,callback){
 
-["createMap","createGame","joinGame","endTurn","sum"].forEach(elm=>{
+
+
+
+}
+
+chain_interface.viewBoardPlayerPoses = function(callback){
+
+	var board = new Array(game.height);
+	for(let i = 0 ; i < board.length ; i++){
+		board[i] = new Array(game.width);
+		board[i].fill(0);
+	}
+
+	for(k in players){
+		let player = players[k];
+		board[player.pos[1]][player.pos[0]]++;
+	}
+
+	callback(board);
+};
+
+chain_interface.view
+
+
+chain_interface.viewGamesList = function(start,end,callback){
+	var list = [];
+
+	var lastIndex = gameArray.length-1;
+	var i0 = start > lastIndex ? lastIndex : start; 
+	var i1 = end > lastIndex ? lastIndex : end;
+
+	for(let i = i0 ; i <= i1 ; i ++){
+		game = games[gameArray[i]];
+		var gameInfo = {};
+
+		['mapid','width','height'].forEach(elm=>{gameInfo[elm] = game[elm];})
+
+		list.push(gameInfo);
+	}
+
+	callback(list);
+};
+
+chain_interface.viewPlayerStates = function(callback){
+	callback(players);
+}
+
+chain_interface.viewLandOwners = function(callback){
+	var list = [];
+	for(var i = 0 ; i < lands.length ; i++){
+		for(var j = 0 ; j < lands[i].length ; j++){
+			if(lands[i][j]){
+				//console.log(`owner of (${j},${i}) : ${lands[i][j].owner}`);
+				list.push([lands[i][j].owner,j,i]);
+			}
+		}
+	} 
+}
+
+
+;if(false)["createMap","createGame","joinGame","endTurn","sum"].forEach(elm=>{
 	var tmp = chain_interface[elm];
 	chain_interface[elm] = function(){
 		if(confirm("transaction : "+elm)){
 			tmp.apply(null,arguments);
 		}
 	};
-});
+})
 
-["build","sell","bid"].forEach(elm=>{
+;["build","sell","bid"].forEach(elm=>{
 	var tmp = chain_interface[elm];
 	chain_interface[elm] = function(){
 		if(players[short(currentAddr)].dice != 0){
@@ -418,3 +578,5 @@ chain_interface.sum = function(callback){
 		}
 	};
 });
+
+

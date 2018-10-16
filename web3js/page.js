@@ -107,8 +107,11 @@ $(document).ready(function(){
 	];
 
 
+	var funcs = {};
+
 	var fakeArgs = {};
-	fakeArgs.createMap = [ /*size*/ 10 ,10  ,1 ,10 ,1 ,10  ,[ [1,1,1,1,1,1,1,1,1,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,1,1,1,1,1,1,1,1,1] ] /*prices*/ ,[ [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000], [100000,0,0,0,0,0,0,0,0,100000], [100000,0,0,0,0,0,0,0,0,100000], [100000,0,0,0,0,0,0,0,0,100000], [100000,0,0,0,0,0,0,0,0,100000], [100000,0,0,0,0,0,0,0,0,100000], [100000,0,0,0,0,0,0,0,0,100000], [100000,0,0,0,0,0,0,0,0,100000], [100000,0,0,0,0,0,0,0,0,100000], [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000] ] ]; 
+	fakeArgs.createMap = [ /*size*/ 10 ,10  ,1 ,10 ,1 ,10  ,[ [1,1,1,1,1,1,1,1,1,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,1,1,1,1,1,1,1,1,1] ] 
+	/*prices*/ ,[ [3000,3000,3000,3000,3000,3000,3000,3000,3000,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,3000,3000,3000,3000,3000,3000,3000,3000,3000] ] ]; 
 
 	var plotInPanel = (elm)=>{
 
@@ -132,7 +135,7 @@ $(document).ready(function(){
 
 		if(props.input) $('#div_'+uiPanelDivIds[props.panelId]).append('<input type="text" id="input_'+funcName+'"></input>');
 		$('#div_'+uiPanelDivIds[props.panelId]).append('<input type="button" id="btn_'+funcName+'" value="'+funcName+'"></input><br>');
-		$('#btn_'+funcName).click(()=>{
+		$('#btn_'+funcName).click(funcs[funcName] = ()=>{
 			var args = [];
 
 
@@ -160,6 +163,8 @@ $(document).ready(function(){
 			chain_interface[funcName].apply(null,args);
 		});
 
+
+
 	}
 
 
@@ -181,11 +186,29 @@ $(document).ready(function(){
 	"sell_input_panelId-1",
 	"build_input_panelId-1",
 	"endTurn_panelId-1",
-	"sum_panelId-1"].forEach(plotInPanel)
+	"sum_panelId-1",
+	"viewGamesList_input_panelId-0",
+	"viewPlayerStates_panelId-0",
+	"viewBoardPlayerPoses_panelId-1"].forEach(plotInPanel)
 
 
 
-
+	;["createMap"
+	,"createGame"
+	,"joinGame"
+	,"useFakePlayerAddress"
+	,"joinGame"
+	,"useFakePlayerAddress"
+	,"joinGame"
+	,"useFakePlayerAddress"
+	,"joinGame"
+	,"useFakePlayerAddress"
+	,"joinGame"
+	,"startGame"
+	,"sum","sum","sum","sum","sum","sum","sum","sum","sum","sum","sum"
+	].forEach(elm=>{
+		funcs[elm]();
+	})
 
 
 });
