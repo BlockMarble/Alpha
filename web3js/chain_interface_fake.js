@@ -33,7 +33,7 @@ var chain_interface = {};
 
 var maps = [];
 var games = {};
-function short(addr){return addr.substr(2,8);}
+function short(addr){if(addr.length == 8) return addr; return addr.substr(2,8);}
 function genRandAddr(){	var addr = randAddrs[randAddrUsed];	randAddrUsed++;	return addr;}
 
 var realAddr = genRandAddr();
@@ -57,9 +57,52 @@ function joinAndInitPlayer(addr,game){
 	}
 
 	var player = {};
+	player.prevDir = "none";
 	player.pos = [0,0];
 	player.cash = 100000;
 	players_[short(addr)] = player;
+}
+
+
+function automove(addr){
+	var player = players[addr];
+	var pos = player.pos;
+
+	var dirToMoveIndex = {left:0,right:1,up:2,down:3};
+	var moveIndexToDir = {0:"left",1:"right",2:"up",3:"down"};
+
+	var	moves = [[-1,0],[1,0],[0,-1],[0,1]];
+	var counderMoveId = [1,0,3,2];
+	var prevMoveId = dirToMoveIndex[player.prevDir];
+
+	while(player.dice > 0){
+		player.dice -- ;
+
+		for(let i = 0 ; i < 4 ; i ++){
+
+			let move = moves[i];
+			let posX1 = pos[0]+move[0]; 	
+			let posY1 = pos[1]+move[1];
+
+			if( 
+				i != counderMoveId[prevMoveId] 
+				&& posX1>=0 && posX1< game.width && posY1>=0 && posY1<game.height 
+				&& game.walls[posY1][posX1] != 0
+				){
+
+				console.log(" got : !! : ");
+				console.log(pos);
+
+				prevMoveId = i; 
+				pos = [posX1,posY1];
+				break;
+			}
+		}
+
+	}
+	
+	player.pos = pos;
+	player.prevDir = moveIndexToDir[prevMoveId];
 }
 
 
@@ -331,11 +374,13 @@ chain_interface.endTurn = function(callback){
 chain_interface.sum = function(callback){
 	var players = game.players;
 
+	console.log(lands);
+
 	for(let i = 0; i < lands.length ; i++){
 		let landRow = lands[i];
 		for(let j = 0; j < landRow.length ; j++){
 			let land = landRow[j];
-			if(!land.owner && land.greatestBid > 0){
+			if(land&&!land.owner && land.greatestBid > 0){
 				land.owner = land.greatestBidder;
 				land.greatestBidder = null;
 				land.greatestBid = null;
@@ -344,15 +389,11 @@ chain_interface.sum = function(callback){
 	}
 
 
-	for(let i = 0 ; i < players ; i++){
-		let shortAddr = short(players[i]);
-
-		if(game.dices[shortAddr] != 0){
-
-			automove()
-
-			game.dices[shortAddr] = 0;
+	for(k in players){
+		if(players[k].dice > 0){
+			automove(k)
 		}
+		console.log(players[k].dice);
 	}
 };
 
