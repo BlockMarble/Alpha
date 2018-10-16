@@ -37,8 +37,6 @@ $(document).ready(function(){
 		let css = [];
 		let cssString = "";
 
-
-
 		for(let i = 0 ; i < arguments.length ; i++){
 
 			let elm = arguments[i];
@@ -147,10 +145,19 @@ $(document).ready(function(){
 					for(let i = 0 ; i < got.length ; i++){
 						args.push(got[i]);
 					}	
-				}else{
-					args.push("");
+				}
+				if(args.length != props.input){
+					show(" ! : need "+ props.input +" arguments : "+chain_interface.argNames[funcName],funcName);
+					if(chain_interface.defaultArgs[funcName]){
+						show(" using defaultArgs ",funcName);
+						args = chain_interface.defaultArgs[funcName];
+					}else{
+						show(" fail : no default args ",funcName);
+						return;
+					}
 				}
 			}
+
 
 
 			args.push(function(res){
@@ -165,31 +172,9 @@ $(document).ready(function(){
 
 
 
-	}
+	};
 
-
-	["createMap_panelId-0_fakeArgs_to-createGame",
-	"loadMap_input_panelId-0",
-	"createGame_input_panelId-0_to-joinGame",
-	"joinGame_input_panelId-0",
-	"startGame_panelId-0",
-	"useFakePlayerAddress_input_panelId-0",
-	"useRealPlayerAddress_panelId-0",
-	"rollDice_panelId-1",
-	"viewMap_panelId-1_input",
-	"viewBoard_panelId-1",
-	"left_input_panelId-1",
-	"right_input_panelId-1",
-	"up_input_panelId-1",
-	"down_input_panelId-1",
-	"bid_input_panelId-1",
-	"sell_input_panelId-1",
-	"build_input_panelId-1",
-	"endTurn_panelId-1",
-	"sum_panelId-1",
-	"viewGamesList_input_panelId-0",
-	"viewPlayerStates_panelId-0",
-	"viewBoardPlayerPoses_panelId-1"].forEach(plotInPanel)
+	chain_interface.funcsList.forEach(plotInPanel)
 
 
 
