@@ -88,15 +88,14 @@ var a = (function(width,height,playerMin,playerMax,diceMin,diceMax,walls,prices,
 var walls_bin = a;
 var oneDimAry = [];
 for(let i = 0 ; i < walls_bin.length ; i++){
-	console.log(walls_bin[i].toString(2));
-	let ary = [];
 	let bignum = walls_bin[i];
+	let ary = [];
 	for(let j = 0;j < 256 ; j++){
 		let val = bignum.modulo(2).toNumber();
 		bignum = bignum.dividedToIntegerBy(2);
 		console.log(val);
 		ary.unshift(val);
 	}
-	console.log(ary);
+	oneDimAry = oneDimAry.concat(ary);
 }
 
