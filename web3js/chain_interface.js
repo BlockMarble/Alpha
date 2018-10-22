@@ -68,7 +68,7 @@ function posToLandId(){
 	}
 };
 
-funcName = "createGame";
+funcName = "createMap";
 chain_interface.argNames[funcName] = "width,height,playerMin,playerMax,diceMin,diceMax,walls,prices";
 chain_interface.funcsList.push(funcName+"_panelId-0_fakeArgs_to-createGame");
 chain_interface.decor[funcName] = "require-userAddress,";
@@ -105,12 +105,7 @@ chain_interface[funcName] = function(width,height,playerMin,playerMax,diceMin,di
 
 	walls_bin.push(bignum);
 
-
-	args[0] = infos;
-	args[1] = walls_bin;
-	args[2] = prices_nonNull;
-
-	contract.creator.createMap(infos,walls_bin,prices_nonNull,(eventType,res)=>{
+	contract.createMap(infos,walls_bin,prices_nonNull,(eventType,res)=>{
 		if(eventType%2 == 1){
 			var mapid = (new BigNumber(res.topics[3])).toNumber();
 			callback(mapid);		
@@ -132,10 +127,10 @@ funcName = "createGame";
 chain_interface.argNames[funcName] = "mapid";
 chain_interface.defaultArgs[funcName] = [0];
 chain_interface.funcsList.push(funcName+"_input-1_panelId-0_to-joinGame");
-chain_interface[funcName] = function(id,callback){
-	contract.createGame(mapid,(eventType,res)=>{
+chain_interface[funcName] = function(mapid,wait,callback){
+	contract.createGame(mapid,wait,(eventType,res)=>{
 		if(eventType%2 == 1){
-			callback(uintToAddr(res.topics[3]);
+			callback(uintToAddr(res.topics[3]));
 		}else{
 			callback("failed");
 		}
@@ -146,6 +141,7 @@ chain_interface.funcsList.push("joinGame_input-1_panelId-0");
 chain_interface.joinGame = function(addr,callback){
 	contract.joinGame(addr,(eventType,res)=>{
 		if(eventType%2 == 1){
+			contract.setGameAddr(addr);
 			callback("success");
 		}else{
 			callback("failed");
@@ -175,7 +171,7 @@ chain_interface.endTurn = function(callback){
 
 chain_interface.funcsList.push("sum_panelId-1");
 chain_interface.sum = function(callback){
-	contract.sum((res)=>)
+	contract.sum((res)=>{})
 };
 
 
@@ -200,7 +196,6 @@ chain_interface.useRealPlayerAddress = function(callback){
 };
 
 
-
 chain_interface.funcsList.push("rollDice_panelId-1");
 chain_interface.rollDice = function(callback){
 	if(contract.fakeAddr){
@@ -216,29 +211,48 @@ chain_interface.viewBoard = function(callback){
 };
 
 let dirs = {
-	left:{vels:[-1,0],counter:"right"},
-	right:{vels:[1,0],counter:"left"},
-	up:{vels:[0,-1],counter:"down"},
-	down:{vels:[0,1],counter:"up"}
+	left:{vels:[-1,0],counter:"right",id:1},
+	right:{vels:[1,0],counter:"left",id:3},
+	up:{vels:[0,-1],counter:"down",id:2},
+	down:{vels:[0,1],counter:"up",id:4}
 };
 for(let k in dirs){
 	chain_interface.funcsList.push(k+"_input-1_panelId-1");
 
 	chain_interface[k] = function(num,callback){
 
-		/**
-			if player cache dice 0 
+		if(player_cache.dice<=0){
+			callback("no more dice left");
+			return;
+		}
+		if(player_cache.dice<num){
+			callback("need more dice");
+			return;
+		}
+		if(player_cache.prevDir == dirs[k].counter){
+			callback("cannot move to dir you came from");
+			return;
+		}
 
-				return 	
-		
 
-			if move valid  
-				
-				update playercache.pos		
-			
-				push left id and num to player cache action params	
-	
-		*/
+		let posX = player_cache.pos[0];
+		let posY = player_cache.pos[1];
+
+		for(let i = 1 ; i <=  num ; i ++){
+			posX+=dirs[k].vels[0];
+			posY+=dirs[k].vels[1];
+
+			if(!board[posY][posX] || posX < 0 || posY < 0 || posX >= game.width || posY >= game.height){
+				callback("move is invalid")
+				return;	
+			}
+		}
+
+		player_cache.dice -= num;
+		player_cache.pos = [posX,posY];
+		player_cache.actionParams.push(dirs[k].id);
+		player_cache.actionParams.push(num);
+		callback("move registered");
 	}
 }
 
@@ -247,34 +261,93 @@ for(let k in dirs){
 
 chain_interface.funcsList.push("bid_input-1_panelId-1");
 chain_interface.bid = function(money,callback){
-	/**
-	
-		if money < player cache cash 
-			
-			push bid id and money to playercache action params 
-
-		else return 
-
-	*/
+	if(player_cache.dice == 0 && !player_cache.flushed){
+		if(player_cache.cash >= money ){
+			player_cache.actionParams.push(5);
+			player_cache.actionParams.push(money);
+		}
+	}
 };
 chain_interface.funcsList.push("sell_input-2_panelId-1");
-chain_interface.sell = function(landposX,landposY,callback){};
+chain_interface.sell = function(landposX,landposY,callback){
+	if(player_cache.dice == 0 && !player_cache.flushed){
+		let landId = posToLandId(landposX,landposY);
+		if(player_cache.owns[landId]){
+			player_cache.actionParams.push(6);
+			player_cache.actionParams.push(landId);
+		}
+	}
+};
 chain_interface.funcsList.push("build_input-3_panelId-1");
-chain_interface.build = function(landposX,landposY,num,callback){};
+chain_interface.build = function(landposX,landposY,num,callback){
+	if(player_cache.dice == 0 && !player_cache.flushed){
+		let landId = posToLandId(landposX,landposY);
+		if(player_cache.owns[landId] && player_cache.cash > 1000){
+			player_cache.actionParams.push(6);
+			player_cache.actionParams.push(landId);
+		}
+	}	
+};
 
 
 chain_interface.funcsList.push("viewMapList_input-2_panelId-0");
-chain_interface.viewMapList = function(start,end,callback){};
+chain_interface.viewMapList = function(start,end,callback){
+	let numNeeded = end - start;
+	
+	if(numNeeded>0){
+		for(let i = start ; i < end ; i++){
+			if(maps[i]){
+				numNeeded--;
+			}else{
+				contract.creator.fetchMap(i,function(err,res){
+					numNeeded--;
+					maps[i] = res;
+					if(numNeeded <= 0){
+						callback(maps.slice(start,end));
+					}
+				});
+			}
+
+		}	
+	}
+};
+
 chain_interface.funcsList.push("viewGamesList_input-2_panelId-0");
-chain_interface.viewGamesList = function(start,end,callback){};
+chain_interface.viewGamesList = function(start,end,callback){
+	let numNeeded = end - start;
+	if(numNeeded>0){
+		for(let i = start ; i < end ; i++){
+			if(games[i]){
+				numNeeded--;
+			}else{
+				contract.creator.fetchGame(i,function(err,res){
+					games[i] = res;
+					numNeeded--;
+					if(numNeeded <= 0){
+						callback(games.slice(start,end));
+					}
+				});
+			}
+
+		}	
+	}
+};
 
 
 
 chain_interface.funcsList.push("viewPlayerStates_panelId-0");
-chain_interface.viewPlayerStates = function(callback){};
+chain_interface.viewPlayerStates = function(callback){callback(players)};
 chain_interface.funcsList.push("viewLandStates_panelId-0");
-chain_interface.viewLandStates = function(callback){};
+chain_interface.viewLandStates = function(callback){callback(lands)};
 
+
+
+
+contract.setDiceGenCallback((res)=>{
+	contract.viewBoard(function(err,res){
+		console.log(res);
+	});
+})
 
 
 
