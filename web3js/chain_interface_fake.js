@@ -537,10 +537,17 @@ chain_interface.sum = function(callback){
 
 chain_interface.funcsList.push("viewMapList_input-2_panelId-0");
 chain_interface.viewMapList = function(start,end,callback){
+	var mapsList = [];
 
+	var lastIndex = maps.length-1;
+	var i0 = start > lastIndex ? lastIndex : start; 
+	var i1 = end > lastIndex ? lastIndex : end;
 
+	for(let i = i0 ; i <= i1 ; i++){
+		mapsList.push(maps[i]);
+	}
 
-
+	callback(mapsList);
 }
 
 chain_interface.funcsList.push("viewBoardPlayerPoses_panelId-0");
