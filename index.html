@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- favicon -->
+	<link href="images/logo/favicon.ico" rel="icon" type="image/x-icon" />
+
+	<!-- site tile -->
+	<title>VisitNepal | Template</title>
+	<!-- normalise css -->
+	<link rel="stylesheet" href="src/assets/css/normalize.css">
+	<!-- bootstrap css -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+	<!-- fontawesome -->
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<!-- custom css -->
+	<link rel="stylesheet" href="src/assets/css/style.css">
+</head>
+
+<style>
+	button{
+		cursor:pointer;
+	}
+	#mapBtn{
+		color:black;
+	}
+	
+	#CreateRoom{
+	  background:#2C3E50;
+	  color:#fff;
+	  border:none;
+	  position:relative;
+	  width: 100%;
+	  height:100px;
+	  font-size:1.6em;
+	  padding:0 2em;
+	  cursor:pointer;
+	  transition:800ms ease all;
+	  outline:none;
+	}
+	#Room{
+	  background:#2C3E50;
+	  color:#fff;
+	  border:none;
+	  position:relative;
+	  width: 100%;
+	  height:400px;
+	  font-size:1.6em;
+	  padding:0 2em;
+	  cursor:pointer;
+	  transition:800ms ease all;
+	  outline:none;
+	}
+	#CreateRoom:hover, #Room:hover{
+	  background:#fff;
+	  color:#2C3E50;
+	}
+	#CreateRoom:before,#CreateRoom:after, #Room:before,#Room:after{
+	  content:'';
+	  position:absolute;
+	  top:0;
+	  right:0;
+	  height:2px;
+	  width:0;
+	  background: #2C3E50;
+	  transition:400ms ease all;
+	}
+	#CreateRoom:after, #Room:after{
+	  right:inherit;
+	  top:inherit;
+	  left:0;
+	  bottom:0;
+	}
+	#CreateRoom:hover:before,#CreateRoom:hover:after, #Room:hover:before,#Room:hover:after{
+	  width:100%;
+	  transition:800ms ease all;
+	}
+	
+	#roomConfig{
+		width:100%;
+	}
+	
+	.form-control{
+		width:100%;
+	}
+	
+	.offset-md-4 {
+    	margin-left: 10%;
+	}
+	
+	.col-md-4 {
+	    max-width: 80%;
+	}
+	
+	.package-card{
+		height: 400px;
+	}
+	
+	.icon-cube1{
+		position: relative;
+		float:left;
+		opacity:0.8;
+		overflow: hidden;
+	}
+
+	.icon-cube1 i{
+		color:#FFCC00;
+		font-size:2em;
+	}
+	
+	.countdown{
+		position: absolute;
+		top: 5px;
+		font-size: 3em;
+	}
+	
+	.icon-pane{
+		position: absolute;
+		bottom: 30px;
+	}
+	.membersCnt{
+		position: absolute;
+		bottom: 10px;
+	}
+	
+	#myPageContent{
+		border:0;
+		padding:0;
+		background:#2C3E50;
+	  	color:#fff;
+	}
+	
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+<script type="text/javascript" src="chain_interface_fake.js"></script>
+<script type="text/javascript" src="page.js"></script>
+
+<script>
+	var roomTag = '';
+	
+	$(document).ready(function(){
+		$('#makeRoom').click(function(){
+			if($('#roomName').val().length < 1 || $('#maximum').val().length < 1 || $('#minimum').val().length < 1 || $('#waitingTime').val().length < 1){
+				alert('모든 항목을 입력해주세요.');
+			}else if($('#mapSelect option:selected').val() == ''){
+				alert('맵을 선택해주세요');
+			}else{
+				makeRoom();
+			}
+		});
+		
+	});
+	
+	function mapSelect(){
+		var mapList = ["map1", "map2", "map3", "map4", "map5", "map6", "map7", "map8"];
+		var listTag = '';
+		mapList.forEach(function(item, index, array){
+			listTag += '<option>'+item+'</option>';
+		});
+		$('#mapSelect').append(listTag);
+	}
+
+	function makeRoom(){
+		var roomName = $('#roomName').val();
+		var maximum = $('#maximum').val();
+		var minimum = $('#minimum').val();
+		var waitingTime = $('#waitingTime').val();
+		var memCnt = 0;
+		
+		roomTag += '<article class="col-md-3 things-to-do-wrapper">'
+				+'	<div class="package-wrapper">'
+				+'		<button id="Room" onclick="createGame();">'
+				+'			<div class="roomname">'+ roomName +'</div>'	
+				+'			<div class="countdown">'+ waitingTime +'</div>'			
+				+'			<div class="icon-pane">'
+				+'				<div class="icon-cube1">'
+				+'					<i class="fa fa-home"></i>'
+				+'				</div>'	
+				+'			</div>'
+				+'			<div class="membersCnt">'+ memCnt +'/'+ maximum +'</div>'
+				+'		</button>'
+				+'	</div>'
+				+'</article>'
+			;
+		$('#roomlist').html(roomTag);
+		$('#myModal').modal('hide');
+	}
+	
+	function joinGame(){
+		alert('게임시작:',callFunc("joinGame"));
+	}
+	
+	function createGame(){
+		alert('게임생성:',callFunc("createGame"));
+	}
+	
+	function fetchGames(){
+		alert('게임패치:',callFunc("fetchGames"));
+	}
+	
+	function loadMaps(){
+		alert('loadMaps',callFunc("loadMaps"));
+	}
+	
+	function callFunc(funcName){			
+		chain_interface[funcName].apply(null,args);
+	}
+	
+</script>
+
+<body>
+	<!-- page-wrap -->
+	<!-- main header -->
+	<header class="main-header clearfix">
+		<nav class="navbar navbar-toggleable-md navbar-light" id="navbar-top-custom">
+			<div class="container">
+				<!-- nabar logo and brand name -->
+				<a class="navbar-brand" href="#">
+					<i class="fa fa-grav header-logo" ></i>
+					<span class="top-brand-name">Block Mable</span>
+				</a>
+				<button id="myPage" class="btn btn-outline-warning my-2 my-sm-0" type="submit" data-toggle="modal" data-target="#myModal1">MyPage</button>
+			</div>
+			<!-- /.container -->
+		</nav>
+	</header>
+
+	<!--hero Section-->
+	<section id="hero">
+		<img src="src/assets/images/things-to-do/city.jpg" class="things-to-do" alt="">
+		<h2>Welcome to BlockMable</h2>
+	</section>	
+	<!-- /.hero -->
+
+	<div class="container">
+		<!-- deals-and-packages section -->
+		<section id="deals-and-packages">
+			<h3></h3>
+			<div>
+				<button id="CreateRoom" onclick="mapSelect();" data-toggle="modal" data-target="#myModal">Create Room</button>
+			</div>
+			<div class="row" id="roomlist">
+				
+			</div>
+			<!-- /.row -->
+		</section>
+		<!-- / deals-and-packages section-->
+		
+
+		<!-- event section-->
+		<section id="events">
+			<h3>what's on</h3>
+			<p>Nepal is culutrally diverse country with variety of cast, religion and ethnicity. The country celebrate various festivals
+				all around the year and has its own calendar "Nepal Sambat".Some of the festivals you can celebrate with local this time
+				around:
+			</p>
+
+			<div class="row">
+				<article class="col-md-4 col-lg-3">
+					<div class="event-wrapper">
+						<img class="event-thumbnail thumbnail" src="src/assets/images/rara.jpg" alt="">
+						<div class="event-tag"><span>2<sup>nd</sup> Feb</span></div>
+					</div>
+					<div class="event-heading">Dashain</div>
+					<p class="event-intro">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima officiis aspernatur voluptatem itaque fugit mollitia
+						vitae veniam at eius ad optio quos minus unde nulla, dolorem dolor quisquam quasi est.</p>
+				</article>
+				<article class="col-md-4 col-lg-3">
+					<div class="event-wrapper">
+						<img class="event-thumbnail thumbnail" src="src/assets/images/ropaijatra.jpg" alt="">
+						<div class="event-tag"><span>1<sup>st</sup> Jun</span></div>
+					</div>
+					<div class="event-heading">Dhan Ropai Jatra</div>
+					<p class="event-intro">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas quaerat molestias ad laboriosam, aperiam, aliquam ipsum
+						cupiditate porro dicta quasi beatae nisi neque, sequi iste asperiores fuga officiis praesentium fugit.</p>
+				</article>
+				<article class="col-md-4 col-lg-3 ">
+					<div class="event-wrapper">
+						<img class="event-thumbnail thumbnail" src="src/assets/images/kumari.jpg" alt="">
+						<div class="event-tag"><span>23<sup>rd</sup>July</span></div>
+					</div>
+					<div class="event-heading">Kumari Puja</div>
+					<p class="event-intro">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, ipsum tenetur asperiores. Nam hic alias quas dolores
+						totam itaque fuga cumque odit, reprehenderit debitis culpa quia quaerat ipsam quidem tenetur!</p>
+				</article>
+				<article class="col-md-4 col-lg-3">
+					<div class="event-wrapper">
+						<img class="event-thumbnail thumbnail" src="src/assets/images/machhindranath.jpg" alt="">
+						<div class="event-tag"><span>2<sup>nd</sup>Oct</span></div>
+					</div>
+					<div class="event-heading">Machhindranth Jatra</div>
+					<p class="event-intro">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima officiis aspernatur voluptatem itaque fugit mollitia
+						vitae veniam at eius ad optio quos minus unde nulla, dolorem dolor quisquam quasi est.</p>
+				</article>
+
+			</div>
+		</section>
+		<!-- / event section -->
+
+
+
+		<!-- destinations section -->
+		<section id="destinations">
+			<h3>Destinations</h3>
+			<div class="row">
+				<article class="col-md-4 col-lg-3">
+					<div class="destination-wrapper">
+						<img class="destination-thumbnail thumbnail" src="src/assets/images/rara.jpg" alt="">
+						<div class="destination-banner">Rara Lake</div>
+					</div>
+				</article>
+				<article class="col-md-4 col-lg-3">
+					<div class="destination-wrapper">
+						<img class="destination-thumbnail img-thumbnail" src="src/assets/images/chitwan.jpg" alt="">
+						<div class="destination-banner">Chitwan National park</div>
+					</div>
+				</article>
+				<article class="col-md-4 col-lg-3">
+					<div class="destination-wrapper">
+						<img class="destination-thumbnail img-thumbnail" src="src/assets/images/destination.jpg" alt="">
+						<div class="destination-banner">Mustang</div>
+						<div class="destination-banner">Mustang</div>
+					</div>
+				</article>
+				<article class="col-md-4 col-lg-3">
+					<div class="destination-wrapper">
+						<img class="destination-thumbnail img-thumbnail" src="src/assets/images/bhaktapur.jpg" alt="">
+						<div class="destination-banner">Bhaktapur Square</div>
+					</div>
+				</article>
+				<article class="col-md-4 col-lg-3">
+					<div class="destination-wrapper">
+						<img class="destination-thumbnail img-thumbnail" src="src/assets/images/mount.jpeg" alt="">
+						<div class="destination-banner">Mt. Everest</div>
+					</div>
+				</article>
+				<article class="col-md-4 col-lg-3">
+					<div class="destination-wrapper">
+						<img class="destination-thumbnail img-thumbnail" src="src/assets/images/namche.jpg" alt="">
+						<div class="destination-banner">Namche Trek</div>
+					</div>
+				</article>
+				<article class="col-md-4 col-lg-3">
+					<div class="destination-wrapper">
+						<img class="destination-thumbnail img-thumbnail" src="src/assets/images/mustang.jpg" alt="">
+						<div class="destination-banner">Namche Trek</div>
+					</div>
+				</article>
+				<article class="col-md-4 col-lg-3">
+					<div class="destination-wrapper">
+						<img class="destination-thumbnail img-thumbnail" src="src/assets/images/sarangkot.jpg" alt="">
+						<div class="destination-banner">Sarangkot</div>
+					</div>
+				</article>
+
+			</div>
+		</section>
+		<!-- / Destination section -->
+
+
+
+		<!-- subscription section-->
+		<section id="subscription">
+			<h3>News letter</h3>
+			<p>Get our news letter, latest packages and offer in your email deliverd.</p>
+			<div class="row" class="subscription-form-wrapper">
+				<div class="col-md-12">
+					<form action="" role="form">
+						<label class="sr-only" for="subscription">Username</label>
+						<div class="input-group col-md-12">
+							<input type="email" name="visitor-email" placeholder="Email" class="col-sm-8 col-md-4 offset-md-4  form-control">
+
+							<button type="button" class="btn btn-primary input-group-addon addon-btn">Subscribe</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</section>
+		<!-- / subscription section -->
+	</div>
+	<!-- /.page-wrap -->
+	<!-- footer -->
+	<footer class="main-footer">
+		<div class="container">
+			<div class="row footer-top">
+
+				<div class="col-md-3 footer-top-col">
+					<h5>DESTINATION</h5>
+					<ul>
+						<li><a href="">Home</a></li>
+						<li><a href="">City</a></li>
+						<li><a href="">Hotels</a></li>
+						<li><a href="">Safari</a></li>
+						<li><a href="">Adventure</a></li>
+					</ul>
+				</div>
+				<div class="col-md-3 footer-top-col">
+					<h5>THINGS TO DO</h5>
+					<ul>
+						<li><a href="">Home</a></li>
+						<li><a href="">City</a></li>
+						<li><a href="">Hotels</a></li>
+						<li><a href="">Safari</a></li>
+						<li><a href="">Adventure</a></li>
+					</ul>
+				</div>
+				<div class="col-md-3 footer-top-col">
+					<h5>EVENTS</h5>
+					<ul>
+						<li><a href="">Home</a></li>
+						<li><a href="">City</a></li>
+						<li><a href="">Hotels</a></li>
+						<li><a href="">Safari</a></li>
+						<li><a href="">Adventure</a></li>
+					</ul>
+				</div>
+				<div class="col-md-3 footer-top-col">
+					<ul>
+						<h5>INFORMATION</h5>
+						<li><a href="">Home</a></li>
+						<li><a href="">City</a></li>
+						<li><a href="">Hotels</a></li>
+						<li><a href="">Safari</a></li>
+						<li><a href="">Adventure</a></li>
+					</ul>
+				</div>
+
+			</div>
+			<!-- /.footer-top -->
+
+			<div class="row footer-bottom">
+				<div class="col-sm-6">
+					<ul class="footer-images">
+						<li><img class="we-love-nepal" src="src/assets/images/logos/footer-logo.png" alt=""></li>
+						<li><img class="ntb" src="src/assets/images/logos/nepal-tourism-board-logo.png" alt=""></li>
+						<li><img class="ntb" src="src/assets/images/logos/sprouttech-logo.png" alt=""></li>
+					</ul>
+				</div>
+
+				<div class="col-sm-6">
+					<small class="copyright">&copy; 2017 <a class="sprouttech-link" href="www.sprouttech.com.au">SproutTech</a> | Design by Ryan Basnet</small>
+				</div>
+			</div>
+			<!-- /.footer-bottom -->
+		</div>
+		<!-- /.container -->
+	</footer>
+
+	<!-- /.room make-modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	   <div class="modal-dialog modal-lg">
+	      <div class="modal-content">
+	         <div class="modal-header">
+	            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	            <h4 class="modal-title" id="myModalLabel">
+	              	Make Room
+	            </h4>
+	         </div>
+	         <div class="modal-body">
+	         	<input type="text" id="roomName" placeholder="방 이름" class="col-sm-8 col-md-4 offset-md-4  form-control">
+	            <input type="text" id="maximum" placeholder="최대 참여인원" class="col-sm-8 col-md-4 offset-md-4  form-control">
+	            <input type="text" id="minimum" placeholder="최소 참여인원" class="col-sm-8 col-md-4 offset-md-4  form-control">
+	            <input type="text" id="waitingTime" placeholder="대기시간(초)" class="col-sm-8 col-md-4 offset-md-4  form-control">
+	            <select id="mapSelect" class="col-sm-8 col-md-4 offset-md-4  form-control">
+	            	<option value="">맵 선택</option>
+	            </select>
+	         </div>
+	         <div id="dChoiceMap"></div>
+	         <div class="modal-footer">
+	         	<button id="makeRoom" class="btn btn-outline-warning my-2 my-sm-0">
+	               	make
+	            </button>
+	            <button class="btn btn-default" data-dismiss="modal">
+	               	close
+	            </button>
+	            
+	         </div>
+	      </div> 
+	   </div> 
+	</div>
+	
+	<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	   <div class="modal-dialog modal-lg">
+	      <div class="modal-content" id="myPageContent">
+	         <div class="modal-header" background="#2C3E50">
+	            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	            <h4 class="modal-title" id="myModalLabel">
+	              	My Page
+	            </h4>
+	         </div>
+	         <div class="modal-body">
+			    <h2>0x7b4e1c497dd68b6fa8bb034f46fc1280e4ce9326</h2>
+			    <table class="table">
+			        <thead>
+			        <tr>
+			            <th>No</th>
+			            <th>Bid(Eth)</th>
+			            <th>Date</th>
+			            <th>View</th>
+			        </tr>
+			        </thead>
+			        <tbody>
+			        <tr>
+			            <td>01</td>
+			            <td>10</td>
+			            <td>2018.1.11</td>
+			            <td>1234</td>
+			        </tr>
+			        </tbody>
+			    </table>
+	         </div>
+	         <div id="dChoiceMap"></div>
+	         <div class="modal-footer">
+	         	<button id="makeRoom" class="btn btn-outline-warning my-2 my-sm-0">
+	               	make
+	            </button>
+	            <button class="btn btn-default" data-dismiss="modal">
+	               	close
+	            </button>
+	            
+	         </div>
+	      </div> 
+	   </div> 
+	</div>
+	
+
+	<!-- Bootstrap js-->
+	<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+	 crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+	 crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+	 crossorigin="anonymous"></script>
+	<!-- <script type="text/javascript" src="src/assets/scripts/app.js"></script> -->
+</body>
+
+</html>
