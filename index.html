@@ -86,11 +86,19 @@
 		width:100%;
 	}
 	
-	.offset-md-4 {
+	.offset-md-5 {
     	margin-left: 10%;
 	}
 	
+	.offset-md-4 {
+    	margin-left: 0%;
+	}
+	
 	.col-md-4 {
+	    max-width: 100%;
+	}
+	
+	.col-md-5 {
 	    max-width: 80%;
 	}
 	
@@ -112,14 +120,10 @@
 	
 	.countdown{
 		position: absolute;
-		top: 5px;
-		font-size: 3em;
+		top: 1px;
+		font-size: 2em;
 	}
 	
-	.icon-pane{
-		position: absolute;
-		bottom: 30px;
-	}
 	.membersCnt{
 		position: absolute;
 		bottom: 10px;
@@ -132,83 +136,176 @@
 	  	color:#fff;
 	}
 	
+	#miniMap{
+		height: 100%;
+		width: 100%;
+		object-fit: contain;
+	}
+	
+	#mapInfo1{
+		float:left;
+		margin-left: 10%;
+		max-width: 50%;
+	}
+	#mapInfo2{
+		float:left;
+		margin-right: 10%;
+		max-width: 50%;
+	}
+	
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
 <script type="text/javascript" src="chain_interface_fake.js"></script>
-<script type="text/javascript" src="page.js"></script>
 
 <script>
 	var roomTag = '';
+	var mapList = [];
+	/****map init value****/
+	var width = 10;
+	var height = 10;
+	var playerMin = 1;
+	var playerMax = 10;
+	var diceMin = 1;
+	var diceMax = 10;
+	var walls = [ [1,1,1,1,1,1,1,1,1,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,1], [1,1,1,1,1,1,1,1,1,1] ]; ;
+	var prices = [ [3000,3000,3000,3000,3000,3000,3000,3000,3000,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,0,0,0,0,0,0,0,0,3000], [3000,3000,3000,3000,3000,3000,3000,3000,3000,3000] ];
+	/************************/
+	
+	var memCnt = 0;
 	
 	$(document).ready(function(){
+		
+		createMapTest();
+		
 		$('#makeRoom').click(function(){
-			if($('#roomName').val().length < 1 || $('#maximum').val().length < 1 || $('#minimum').val().length < 1 || $('#waitingTime').val().length < 1){
-				alert('모든 항목을 입력해주세요.');
-			}else if($('#mapSelect option:selected').val() == ''){
+			if($('#mapSelect option:selected').val() == ''){
 				alert('맵을 선택해주세요');
 			}else{
 				makeRoom();
 			}
 		});
 		
+		$('#mapSelect').change(function(){
+			console.log(this.value);
+			loadMap(mapList[0]);
+		});
+		
 	});
 	
-	function mapSelect(){
-		var mapList = ["map1", "map2", "map3", "map4", "map5", "map6", "map7", "map8"];
-		var listTag = '';
+	function mapSelect(res){
+		console.log(mapList);
+		
+		$('#mapInfo').html('');
+		
+		var listTag = '<option value="">맵 선택</option>';
 		mapList.forEach(function(item, index, array){
-			listTag += '<option>'+item+'</option>';
+			listTag += '<option>map'+item+'</option>';
 		});
-		$('#mapSelect').append(listTag);
+		$('#mapSelect').html(listTag);
+
+	}
+	
+	function createMapTest(){
+		//width,height,playerMin,playerMax,diceMin,diceMax,walls,prices,callback
+		chain_interface.createMap(width,height,playerMin,playerMax,diceMin,diceMax,walls,prices, function(res){
+			mapList.push(res);
+		});
+	}
+	
+	
+	function loadMap(selectedMap){
+		chain_interface.loadMap(selectedMap, function(res){
+			console.log(res);
+			console.log("res[width]: "+res["width"]);
+			var width = res["width"];
+			var height = res["height"];
+			var playerMin = res["playerMin"];
+			var playerMax = res["playerMax"];
+			var diceMin = res["diceMin"];
+			var diceMax = res["diceMax"];
+			var walls = res["walls"];
+			var prices = res["prices"];
+			
+			var mapInfo = '<div id="mapInfo1">'
+						+ '<input type="text" value="맵 크기: '+ width +' x '+ height +'" class="col-sm-8 col-md-4 offset-md-4  form-control">' 
+						+ '<input type="text" value="최소 참여자 수: '+ playerMin +'" class="col-sm-8 col-md-4 offset-md-4  form-control">'
+						+ '<input type="text" value="최대 참여자 수: '+ playerMax +'" class="col-sm-8 col-md-4 offset-md-4  form-control">'
+						+ '<input type="text" value="최소 주사위 숫자: '+ diceMin +'" class="col-sm-8 col-md-4 offset-md-4  form-control">'
+						+ '<input type="text" value="최대 주사위 숫자: '+ diceMax +'" class="col-sm-8 col-md-4 offset-md-4  form-control">'
+						+ '</div> <div id="mapInfo2"><img id="miniMap" src="image/miniMap.png"></div>'
+			;
+			$('#mapInfo').html(mapInfo);
+			
+		});
+	}
+	
+	function createGame(){
+		chain_interface.createGame(mapList, function(res){
+			console.log(res);
+		});
+	}
+	
+	function joinGame(address){
+		memCnt++;
+		if(memCnt <= 10){
+			chain_interface.joinGame(address, function(res){
+				console.log(res);
+			});
+	
+			console.log('memCnt: '+memCnt);
+			var a = $('#mebersCnt').text();
+			console.log(a);
+			$('#roomlist').html(roomTag);
+			document.getElementById('membersCnt').innerHTML= memCnt+'/'+playerMax;
+		} else{
+			alert('정원이 초과되었습니다');
+		}
 	}
 
 	function makeRoom(){
 		var roomName = $('#roomName').val();
 		var maximum = $('#maximum').val();
 		var minimum = $('#minimum').val();
-		var waitingTime = $('#waitingTime').val();
-		var memCnt = 0;
+		var second = 60;
 		
-		roomTag += '<article class="col-md-3 things-to-do-wrapper">'
-				+'	<div class="package-wrapper">'
-				+'		<button id="Room" onclick="createGame();">'
-				+'			<div class="roomname">'+ roomName +'</div>'	
-				+'			<div class="countdown">'+ waitingTime +'</div>'			
-				+'			<div class="icon-pane">'
-				+'				<div class="icon-cube1">'
-				+'					<i class="fa fa-home"></i>'
-				+'				</div>'	
-				+'			</div>'
-				+'			<div class="membersCnt">'+ memCnt +'/'+ maximum +'</div>'
-				+'		</button>'
-				+'	</div>'
-				+'</article>'
+		 $(".countdown").html(second);
+		 
+		 var timer = setInterval(function () {
+			  // 설정
+			  $(".countdown").html(second);
+			  
+			  if(second == 0){
+			   alert('타이머 종료.');
+			   clearInterval(timer); /* 타이머 종료 */
+			  }else{
+			   second--;
+			   if(second<10){
+			    $(".countdown").html('0' + second);
+			   }	
+			  }
+			 }, 1000); /* millisecond 단위의 인터벌 */
+		
+		chain_interface.createGame(mapList, function(res){
+			console.log('createGame: '+res);
+			
+			roomTag += '<article class="col-md-3 things-to-do-wrapper">'
+					+'		<div class="package-wrapper">'
+					+'			<button id="Room" onclick="joinGame(\''+res+'\');">'
+					+'				<div class="roomname" style="text-align: center"><img id="miniMap" src="image/miniMap.png"></div>'	
+					+'				<div class="countdown">'+ second +'</div>'			
+					+'				<div class="membersCnt" id="membersCnt">'+ memCnt +'/'+ playerMax +'</div>'
+					+'			</button>'
+					+'		</div>'
+					+'	</article>'
 			;
-		$('#roomlist').html(roomTag);
-		$('#myModal').modal('hide');
+			$('#roomlist').html(roomTag);
+			$('#myModal').modal('hide');
+		});
 	}
 	
-	function joinGame(){
-		alert('게임시작:',callFunc("joinGame"));
-	}
-	
-	function createGame(){
-		alert('게임생성:',callFunc("createGame"));
-	}
-	
-	function fetchGames(){
-		alert('게임패치:',callFunc("fetchGames"));
-	}
-	
-	function loadMaps(){
-		alert('loadMaps',callFunc("loadMaps"));
-	}
-	
-	function callFunc(funcName){			
-		chain_interface[funcName].apply(null,args);
-	}
+
 	
 </script>
 
@@ -251,204 +348,7 @@
 		<!-- / deals-and-packages section-->
 		
 
-		<!-- event section-->
-		<section id="events">
-			<h3>what's on</h3>
-			<p>Nepal is culutrally diverse country with variety of cast, religion and ethnicity. The country celebrate various festivals
-				all around the year and has its own calendar "Nepal Sambat".Some of the festivals you can celebrate with local this time
-				around:
-			</p>
-
-			<div class="row">
-				<article class="col-md-4 col-lg-3">
-					<div class="event-wrapper">
-						<img class="event-thumbnail thumbnail" src="src/assets/images/rara.jpg" alt="">
-						<div class="event-tag"><span>2<sup>nd</sup> Feb</span></div>
-					</div>
-					<div class="event-heading">Dashain</div>
-					<p class="event-intro">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima officiis aspernatur voluptatem itaque fugit mollitia
-						vitae veniam at eius ad optio quos minus unde nulla, dolorem dolor quisquam quasi est.</p>
-				</article>
-				<article class="col-md-4 col-lg-3">
-					<div class="event-wrapper">
-						<img class="event-thumbnail thumbnail" src="src/assets/images/ropaijatra.jpg" alt="">
-						<div class="event-tag"><span>1<sup>st</sup> Jun</span></div>
-					</div>
-					<div class="event-heading">Dhan Ropai Jatra</div>
-					<p class="event-intro">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas quaerat molestias ad laboriosam, aperiam, aliquam ipsum
-						cupiditate porro dicta quasi beatae nisi neque, sequi iste asperiores fuga officiis praesentium fugit.</p>
-				</article>
-				<article class="col-md-4 col-lg-3 ">
-					<div class="event-wrapper">
-						<img class="event-thumbnail thumbnail" src="src/assets/images/kumari.jpg" alt="">
-						<div class="event-tag"><span>23<sup>rd</sup>July</span></div>
-					</div>
-					<div class="event-heading">Kumari Puja</div>
-					<p class="event-intro">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, ipsum tenetur asperiores. Nam hic alias quas dolores
-						totam itaque fuga cumque odit, reprehenderit debitis culpa quia quaerat ipsam quidem tenetur!</p>
-				</article>
-				<article class="col-md-4 col-lg-3">
-					<div class="event-wrapper">
-						<img class="event-thumbnail thumbnail" src="src/assets/images/machhindranath.jpg" alt="">
-						<div class="event-tag"><span>2<sup>nd</sup>Oct</span></div>
-					</div>
-					<div class="event-heading">Machhindranth Jatra</div>
-					<p class="event-intro">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima officiis aspernatur voluptatem itaque fugit mollitia
-						vitae veniam at eius ad optio quos minus unde nulla, dolorem dolor quisquam quasi est.</p>
-				</article>
-
-			</div>
-		</section>
-		<!-- / event section -->
-
-
-
-		<!-- destinations section -->
-		<section id="destinations">
-			<h3>Destinations</h3>
-			<div class="row">
-				<article class="col-md-4 col-lg-3">
-					<div class="destination-wrapper">
-						<img class="destination-thumbnail thumbnail" src="src/assets/images/rara.jpg" alt="">
-						<div class="destination-banner">Rara Lake</div>
-					</div>
-				</article>
-				<article class="col-md-4 col-lg-3">
-					<div class="destination-wrapper">
-						<img class="destination-thumbnail img-thumbnail" src="src/assets/images/chitwan.jpg" alt="">
-						<div class="destination-banner">Chitwan National park</div>
-					</div>
-				</article>
-				<article class="col-md-4 col-lg-3">
-					<div class="destination-wrapper">
-						<img class="destination-thumbnail img-thumbnail" src="src/assets/images/destination.jpg" alt="">
-						<div class="destination-banner">Mustang</div>
-						<div class="destination-banner">Mustang</div>
-					</div>
-				</article>
-				<article class="col-md-4 col-lg-3">
-					<div class="destination-wrapper">
-						<img class="destination-thumbnail img-thumbnail" src="src/assets/images/bhaktapur.jpg" alt="">
-						<div class="destination-banner">Bhaktapur Square</div>
-					</div>
-				</article>
-				<article class="col-md-4 col-lg-3">
-					<div class="destination-wrapper">
-						<img class="destination-thumbnail img-thumbnail" src="src/assets/images/mount.jpeg" alt="">
-						<div class="destination-banner">Mt. Everest</div>
-					</div>
-				</article>
-				<article class="col-md-4 col-lg-3">
-					<div class="destination-wrapper">
-						<img class="destination-thumbnail img-thumbnail" src="src/assets/images/namche.jpg" alt="">
-						<div class="destination-banner">Namche Trek</div>
-					</div>
-				</article>
-				<article class="col-md-4 col-lg-3">
-					<div class="destination-wrapper">
-						<img class="destination-thumbnail img-thumbnail" src="src/assets/images/mustang.jpg" alt="">
-						<div class="destination-banner">Namche Trek</div>
-					</div>
-				</article>
-				<article class="col-md-4 col-lg-3">
-					<div class="destination-wrapper">
-						<img class="destination-thumbnail img-thumbnail" src="src/assets/images/sarangkot.jpg" alt="">
-						<div class="destination-banner">Sarangkot</div>
-					</div>
-				</article>
-
-			</div>
-		</section>
-		<!-- / Destination section -->
-
-
-
-		<!-- subscription section-->
-		<section id="subscription">
-			<h3>News letter</h3>
-			<p>Get our news letter, latest packages and offer in your email deliverd.</p>
-			<div class="row" class="subscription-form-wrapper">
-				<div class="col-md-12">
-					<form action="" role="form">
-						<label class="sr-only" for="subscription">Username</label>
-						<div class="input-group col-md-12">
-							<input type="email" name="visitor-email" placeholder="Email" class="col-sm-8 col-md-4 offset-md-4  form-control">
-
-							<button type="button" class="btn btn-primary input-group-addon addon-btn">Subscribe</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</section>
-		<!-- / subscription section -->
-	</div>
-	<!-- /.page-wrap -->
-	<!-- footer -->
-	<footer class="main-footer">
-		<div class="container">
-			<div class="row footer-top">
-
-				<div class="col-md-3 footer-top-col">
-					<h5>DESTINATION</h5>
-					<ul>
-						<li><a href="">Home</a></li>
-						<li><a href="">City</a></li>
-						<li><a href="">Hotels</a></li>
-						<li><a href="">Safari</a></li>
-						<li><a href="">Adventure</a></li>
-					</ul>
-				</div>
-				<div class="col-md-3 footer-top-col">
-					<h5>THINGS TO DO</h5>
-					<ul>
-						<li><a href="">Home</a></li>
-						<li><a href="">City</a></li>
-						<li><a href="">Hotels</a></li>
-						<li><a href="">Safari</a></li>
-						<li><a href="">Adventure</a></li>
-					</ul>
-				</div>
-				<div class="col-md-3 footer-top-col">
-					<h5>EVENTS</h5>
-					<ul>
-						<li><a href="">Home</a></li>
-						<li><a href="">City</a></li>
-						<li><a href="">Hotels</a></li>
-						<li><a href="">Safari</a></li>
-						<li><a href="">Adventure</a></li>
-					</ul>
-				</div>
-				<div class="col-md-3 footer-top-col">
-					<ul>
-						<h5>INFORMATION</h5>
-						<li><a href="">Home</a></li>
-						<li><a href="">City</a></li>
-						<li><a href="">Hotels</a></li>
-						<li><a href="">Safari</a></li>
-						<li><a href="">Adventure</a></li>
-					</ul>
-				</div>
-
-			</div>
-			<!-- /.footer-top -->
-
-			<div class="row footer-bottom">
-				<div class="col-sm-6">
-					<ul class="footer-images">
-						<li><img class="we-love-nepal" src="src/assets/images/logos/footer-logo.png" alt=""></li>
-						<li><img class="ntb" src="src/assets/images/logos/nepal-tourism-board-logo.png" alt=""></li>
-						<li><img class="ntb" src="src/assets/images/logos/sprouttech-logo.png" alt=""></li>
-					</ul>
-				</div>
-
-				<div class="col-sm-6">
-					<small class="copyright">&copy; 2017 <a class="sprouttech-link" href="www.sprouttech.com.au">SproutTech</a> | Design by Ryan Basnet</small>
-				</div>
-			</div>
-			<!-- /.footer-bottom -->
-		</div>
-		<!-- /.container -->
-	</footer>
+		
 
 	<!-- /.room make-modal -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -461,13 +361,13 @@
 	            </h4>
 	         </div>
 	         <div class="modal-body">
-	         	<input type="text" id="roomName" placeholder="방 이름" class="col-sm-8 col-md-4 offset-md-4  form-control">
-	            <input type="text" id="maximum" placeholder="최대 참여인원" class="col-sm-8 col-md-4 offset-md-4  form-control">
-	            <input type="text" id="minimum" placeholder="최소 참여인원" class="col-sm-8 col-md-4 offset-md-4  form-control">
-	            <input type="text" id="waitingTime" placeholder="대기시간(초)" class="col-sm-8 col-md-4 offset-md-4  form-control">
-	            <select id="mapSelect" class="col-sm-8 col-md-4 offset-md-4  form-control">
-	            	<option value="">맵 선택</option>
+	         	<!--  <input type="text" id="roomName" placeholder="방 이름" class="col-sm-8 col-md-4 offset-md-4  form-control">
+	            <input type="text" id="maximum"  class="col-sm-8 col-md-4 offset-md-4  form-control">
+	            <input type="text" id="minimum"  class="col-sm-8 col-md-4 offset-md-4  form-control">
+	            <input type="text" id="waitingTime" placeholder="대기시간(초)" class="col-sm-8 col-md-4 offset-md-4  form-control"> -->
+	            <select id="mapSelect" class="col-sm-8 col-md-5 offset-md-5  form-control">
 	            </select>
+	            <div id="mapInfo"></div>
 	         </div>
 	         <div id="dChoiceMap"></div>
 	         <div class="modal-footer">
