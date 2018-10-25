@@ -181,7 +181,7 @@ contract.createGame = function(mapid,wait,callback){
 
 contract.startGame = function(callback){
 	contract.currentEventListeners.startGame = callback;
-	contract.game.startGame(NULL_CALLBACK);
+	contract.game.start(NULL_CALLBACK);
 }
 
 contract.setDiceGenCallback = function(callback){
