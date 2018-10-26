@@ -1,0 +1,889 @@
+
+/* ================================= 
+  Table of content
+==================================== */
+/*
+1. Color Palette
+2. Base Element Styles
+3. Base Heading Styles
+4. Base Layout Styles
+	1. Navigation
+	2. Package
+	3. Event
+	4. Things to do
+	5. Destinations
+	6. 
+5. Media Queries
+
+*/
+/* ================================= 
+  Color Palettes 
+==================================== */
+
+
+
+	/* 
+		Dark Blue	: #2C3E50;
+		Dark Yellow : #FFCC00
+		Light Gray 	: #ECF0F1;
+	*/
+
+/* ================================= 
+  Google fonts
+==================================== */
+
+@import url("https://fonts.googleapis.com/css?family=Kaushan+Script");
+
+
+/* ================================= 
+  Base Element Styles
+==================================== */
+
+a{
+
+	text-decoration: none;
+	
+}
+
+body{
+
+	color:#7F8C8D;
+}
+
+h5{
+
+	font-size: 0.9em;
+	font-weight: 600;
+}
+/* ================================= 
+  Base Heading Styles
+==================================== */
+
+section h3 {
+
+	
+	font-weight: 400;
+	color:#2C3E50;
+	text-align: center;
+	padding:1em 0;
+	text-transform: uppercase;
+	font-size: 25px;
+	line-height: 18px;
+}
+p{
+	font-weight: lighter;
+	font-size: 14px;
+	line-height: 22px;
+}
+
+
+/* ================================= 
+  Base Layout Styles
+==================================== */
+
+
+
+/* ---- Layout Containers ---- */
+
+.page-wrap{
+
+	min-height:calc(100vh - 150px);
+
+}
+
+.main-header{
+
+	background-color:#2C3E50;
+	padding:0;
+	height:auto;
+	z-index:999;
+	position:fixed;
+	width:100%;
+}
+
+.main-footer{
+
+	background-color:#ECF0F1;
+	padding: 2rem 0;
+	min-height:150px;
+
+}
+
+.container{
+
+	width:80%;
+	margin:0 auto;
+	
+}
+
+section{
+
+	padding:2em 0;
+	text-align: center;
+}
+
+/* ---- Navigation ---- */
+
+#navbar-top-custom{
+
+	
+	height:100%;
+
+}
+
+/*---- navbar logo to hide belowtablet device ----*/
+.navbar-brand .header-logo{
+
+	color:#FFCC00 !important;
+	font-size:50px;
+	display:none;
+}
+
+.navbar .top-brand-name{
+
+	font-family:'Kaushan Script', cursive;;
+	display:inline-block;
+	padding: 0;
+	font-size: 1.5em;
+	color:#FFF;
+}
+
+#hamburger{
+
+	border-color:#FFCC00;
+	top:0.6rem;
+}
+
+ .navbar-light .navbar-toggler{
+
+	color:red;
+}
+
+
+.navbar-light .navbar-nav .nav-link{
+
+	color:#FFF !important;
+	font-size: 0.9rem;
+}
+
+
+
+.navbar-brand .header-logo{
+
+	color:#FFCC00 !important;
+	font-size:50px;
+}
+
+
+.top-brand-name{
+
+	font-family:'Kaushan Script', cursive;;
+	display:inline-block;
+	padding: 0;
+	font-size: 2em;
+	color:#FFF;
+}
+/*---- Hero Video ----*/
+
+#hero{
+
+	width:100%;
+	height:100vh;
+	position:Relative;
+	padding:0;
+	overflow: hidden;
+}
+
+.video-audio{
+
+	position:absolute;
+	top:80px;
+	right:10px;
+	color:#FFF !important;
+	font-size:25px;
+	z-index: 9999;
+}
+.video-audio i{
+	color:#FFF !important;
+	font-size:25px;
+}
+.intro-video{
+
+	height:100%;
+	width: 100%;
+	object-fit:cover;
+
+}
+
+
+.video-overlay{
+
+	position: absolute;
+	bottom:0;
+  	z-index: 1;
+  	bottom: 0;
+  	width:100%;
+  	min-height: 100%;
+  	/*background-color: #FFCC00;*/
+  	opacity:0.2;
+}
+
+#hero h2{
+
+	position: absolute;
+	top:35%;
+	text-align:center;
+  	z-index: 1;
+  	
+  	width:100%;
+  	color:#fff;
+  	font-family:'Kaushan Script', cursive;;
+  	font-size: 5em;
+
+}
+
+.bottom-icon-tile-pannel{
+
+	display: none;
+
+}
+
+.article-wrapper{
+
+	text-align:center;
+}
+
+
+
+/* ---- Package ---- */
+
+.package-wrapper{
+
+	padding:20px 40px;
+	height: auto;
+}
+
+.package-card{
+	height:400px;
+	text-align: center !important;
+	padding-bottom:20px;
+	background-color: #2C3E50;
+	color:#FFF;
+	
+}
+.package-card .card-img-top{
+
+	height: 120px;
+}
+
+.package-card-heading{
+
+	font-size: 1rem;
+	padding-top:15px;
+	padding-bottom: 10px ;
+	text-transform: uppercase;
+}
+
+.package-price{
+
+	color: #FFF;
+	line-height: 40px;
+	font-size: 30px;
+	font-weight: 800;
+}
+.package-menu{
+
+	margin:0 auto;
+}
+
+.package-menu li{
+	
+	color: #FFCC00;
+	text-align: center;
+	border-bottom: 1px dotted #FFF;
+	padding:10px 10px;
+	width:150px;
+	font-size: 0.9em;
+}
+
+.package-intro{
+	
+	padding:15px 20px;
+	text-align: justify;
+}
+
+.btn-price{
+	
+	background-color: #FFCC00;
+	color:#2C3E50;
+	width:150px;
+	text-align: center;
+	margin:0 auto;
+	margin-top: 30px;
+}
+/* -- credit-card-payment --*/
+
+.credit-card-box{
+	/*outline:1px red solid;*/
+}
+/* CSS for Credit Card Payment form */
+.credit-card-box .panel-title {
+    display: inline;
+    font-weight: bold;
+}
+
+.credit-card-box .form-control.error {
+    border-color: red;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(255,0,0,0.6);
+}
+
+.credit-card-box label.error {
+  font-weight: bold;
+  color: red;
+  padding: 2px 8px;
+  margin-top: 2px;
+}
+
+.credit-card-box .payment-errors {
+  font-weight: bold;
+  color: red;
+  padding: 2px 8px;
+  margin-top: 2px;
+}
+
+.credit-card-box label {
+    display: block;
+}
+
+/* The old "center div vertically" hack */
+.credit-card-box .display-table {
+    display: table;
+}
+
+.credit-card-box .display-tr {
+    display: table-row;
+}
+
+.credit-card-box .display-td {
+    display: table-cell;
+    vertical-align: middle;
+    width: 50%;
+}
+
+/* ---- Things-to-do ---- */
+
+
+
+.things-to-do-wrapper{
+
+	padding:0;
+}
+
+.things-to-do-card{
+	position: relative;
+	width:100%;
+	height:250px;
+	border-radius: 0px;
+	border:none;
+	overflow: hidden;
+
+}
+
+.things-to-do{
+
+	width:100%;
+	height:100%;
+	object-fit:cover;
+}
+
+.things-to-do-overlay{
+
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: #333;
+	z-index: 3;
+	top:0;
+	opacity: 0;
+	transition:all 0.3s ease;
+}
+.things-to-do-heading{
+	
+
+	position:absolute;
+	opacity:0;
+	color:#FFF;
+	font-size: 1em;
+	z-index: 4;
+	width:100%;
+	height: 100%;
+	top:0;
+	display: flex;
+	justify-content:center;
+	align-items:center;
+}
+.things-to-do-heading h4{
+	text-align: center;
+	font-size: 1em;
+	font-weight: 300;
+	transform:scale(0);
+	transition:all 0.4s ease;
+	text-transform: uppercase;
+}
+
+.things-to-do-heading h4:after{
+
+	content: "";
+	position: absolute;
+	width:120px;
+	height: 1px;
+	background-color: #FFF;
+	left:-20px;
+	top:25px;
+}
+.things-to-do-wrapper:hover .things-to-do-overlay{
+
+	opacity:0.6;
+}
+
+.things-to-do-wrapper:hover .things-to-do-heading{
+
+	opacity:1;
+
+	}
+
+.things-to-do-wrapper:hover .things-to-do-heading>h4{
+
+	transform:scale(1.2);
+
+	}
+/* ---- Events ---- */
+
+.event-wrapper{
+
+	width:100%;
+	height:180px;
+		/*outline:1px red solid;*/
+	margin:10px 0;
+	position:relative;
+	overflow:hidden;
+	}
+
+.event-thumbnail{
+
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	transition:all 0.3s ease-out;
+		
+
+	}
+
+.event-heading{
+
+	color:#2C3E50;
+}
+
+.event-intro{
+
+	text-align: justify;
+}
+.event-tag{
+
+
+	position: absolute;
+	top:0;
+	right:0;
+	width:90px;
+	height:50px;
+	background-color: #d9534f;
+	opacity:0.9;
+	color:#FFF;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	transition:all 0.3s ease-out;
+
+}
+
+.event-wrapper:hover .event-thumbnail{
+
+	opacity:0;
+}
+.event-wrapper:hover .event-tag{
+
+	width:100%;
+	height:100%;
+}
+
+
+/* ---- Destinations ---- */
+.destination-wrapper{
+
+	width:100%;
+	height:250px;
+		/*outline:1px red solid;*/
+	margin:10px 0;
+	position:relative;
+	overflow:hidden;
+	}
+
+.destination-thumbnail{
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	transition:all 0.3s ease-in;
+
+	}
+
+.destination-wrapper:hover .destination-thumbnail{
+
+	transform:scale(1.2);
+	
+}
+.destination-banner{
+
+	position: absolute;
+	height:60px;
+	width:100%;
+	bottom:0px;
+	background-color: #000;
+	opacity:0.8;
+	color:#FFF;
+	display: flex;
+	align-items:center;
+	justify-content:center;
+	transition:all 0.3s ease-in;
+}
+
+	
+
+/* ---- Subscription ---- */
+
+button.addon-btn{
+
+	background-color: #5cb85c;
+	color:#FFF;
+}
+
+/* ---- Footer ---- */
+
+.footer-top .footer-top-col{
+
+	text-align: left;
+}
+
+.footer-top h5{
+
+	color:#2C3E50;
+}
+
+.footer-top ul{
+
+	margin:0;
+	padding:0;
+	list-style-type: none;
+	text-align: left;
+}
+.footer-top ul li{
+
+	list-style-type:none;
+	font-size:0.8em; 
+	padding:0.5em 0;
+
+}
+
+
+.footer-top ul li a{
+
+	color:#7F8C8D;
+}
+
+
+
+.footer-top ul li a:hover{
+
+	color:#2C3E50;
+}
+
+
+
+
+.footer-bottom{
+	
+	margin: 30px 0;
+	display: flex;
+	flex-direction:row;
+
+}
+
+.copyright,.footer-images{
+
+	text-align: center;
+}
+
+.copyright{
+
+	color:#2C3E50;
+	margin:0;
+	margin-bottom:10px;
+	vertical-align: bottom;
+}
+
+.footer-images li img{
+
+	width:110px;
+	height:40px;
+	margin-top: 15px;
+}
+
+.sprouttech-link{
+
+	color:tomato;
+}
+
+
+
+.banner{
+
+	width:100%;
+	background-color: red;
+	min-height:calc(100vh - 80px);
+}
+
+
+
+/* ================================= 
+  Utility styles
+==================================== */
+
+.clearfix::after{
+
+	content: "";
+	display: table;
+	clear:both;
+}
+
+
+/* ================================= 
+  Page specific
+==================================== */
+
+
+
+/* ---- index ---- */
+
+
+
+
+/* ================================= 
+  Media Queries
+==================================== */
+
+
+
+/* ---- Small devices (landscape phones, 576px and up) ---- */
+@media (min-width: 576px) { 
+
+	.footer-bottom .footer-images,.copyright{
+
+		float:left;
+		margin: 0;
+		padding:0;
+	}
+
+	.footer-bottom-col{
+
+	position:relative;
+	}
+
+	.copyright{
+
+		position: absolute;
+		bottom:0;
+
+	}
+}
+
+/* ----  Medium devices (tablets, 768px and up) ---- */
+@media (min-width: 768px) { 
+
+	/*---- navbar logo to appear above tablet device ----*/
+
+	.navbar-brand .header-logo{
+
+		color:#FFCC00 !important;
+		font-size:50px;
+		display:inline-block;
+	}
+
+	#hero h2:after{
+
+	content:"";
+	width: 30%;
+	height:2px;
+	position:absolute;
+	top:90px;
+	left:35%;
+	background-color:#fff;
+
+}
+
+	/*---- Footer  ----*/
+
+	.footer-logo{
+
+	
+		vertical-align: top;
+		width:150px;
+		height:60px;
+	}
+
+	
+
+	.footer-bottom .footer-images li{
+	
+		list-style-type: none;
+		display: inline-block;
+	}
+
+	
+
+
+ }
+
+/* ---- Hero tile icons ---- */
+.bottom-icon-tile-pannel{
+	display: flex;
+	position: absolute;
+	height:220px;
+	text-align:center;
+  	z-index: 1;
+  	bottom: 0;
+  	width:100%;
+}
+
+
+
+.left-panel,.right-panel{
+
+	width:50%;
+	height:100%;
+
+
+}
+
+
+.icon-cube{
+	position: relative;
+	height:80px;
+	width:80px;
+	float:left;
+	background-color: #2C3E50;
+	margin:10px;
+	opacity:0.8;
+	overflow: hidden;
+}
+
+.icon-pane,.cube-slider{
+
+	position:absolute;
+	width:100%;
+	height:100%;
+}
+
+.icon-pane,.cube-slider{
+
+	display:flex;
+	align-items:center;
+	justify-content:center;
+}
+.cube-slider{
+
+	background-color: #FFF;
+	z-index: 9;
+	top:-100px;
+	font-size: 0.7em;
+	color:#2C3E50;
+	transition:all 0.3s ease-in;
+}
+.cube-slider h4{
+
+	color:;
+	font-size: 0.9em;
+}
+
+.icon-pane{
+	
+	z-index: 7;
+	
+}
+
+.left-panel .icon-cube{
+
+	float:left;
+
+}
+
+.right-panel .icon-cube{
+
+	float:right;
+}
+
+.icon-cube:nth-child(2){
+
+	clear:both;
+}
+
+.icon-cube:hover .cube-slider {
+	
+	transform: translateY(100px);
+
+}
+
+
+.icon-cube i{
+	
+	color:#FFCC00;
+	font-size:2em;
+}
+
+.package-wrapper{
+
+	padding:20px 20px;
+}
+
+
+
+/* ---- Large devices (desktops, 992px and up) ---- */
+@media (min-width: 992px) { 
+
+	#navbar-top-custom .navbar-nav{
+
+		margin-left:50px;
+}	
+
+
+
+
+}
+
+/* ---- Extra large devices (large desktops, 1200px and up) ---- */
+@media (min-width: 1200px) { 
+
+	#navbar-top-custom .navbar-nav{
+
+		margin-left:50px;
+	}
+	.package-wrapper{
+
+	padding:20px 20px;
+}
+
+}
+
