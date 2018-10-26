@@ -10,13 +10,13 @@
 	<!-- site tile -->
 	<title>VisitNepal | Template</title>
 	<!-- normalise css -->
-	<link rel="stylesheet" href="src/assets/css/normalize.css">
+	<link rel="stylesheet" href="css/normalize.css">
 	<!-- bootstrap css -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
 	<!-- fontawesome -->
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 	<!-- custom css -->
-	<link rel="stylesheet" href="src/assets/css/style.css">
+	<link rel="stylesheet" href="css/style.css">
 </head>
 
 <style>
@@ -234,7 +234,7 @@
 						+ '<input type="text" value="최대 참여자 수: '+ playerMax +'" class="col-sm-8 col-md-4 offset-md-4  form-control">'
 						+ '<input type="text" value="최소 주사위 숫자: '+ diceMin +'" class="col-sm-8 col-md-4 offset-md-4  form-control">'
 						+ '<input type="text" value="최대 주사위 숫자: '+ diceMax +'" class="col-sm-8 col-md-4 offset-md-4  form-control">'
-						+ '</div> <div id="mapInfo2"><img id="miniMap" src="image/miniMap.png"></div>'
+						+ '</div> <div id="mapInfo2"><img id="miniMap" src="miniMap.png"></div>'
 			;
 			$('#mapInfo').html(mapInfo);
 			
@@ -262,6 +262,7 @@
 		} else{
 			alert('정원이 초과되었습니다');
 		}
+		location.href = "map.html";
 	}
 
 	function makeRoom(){
@@ -293,7 +294,7 @@
 			roomTag += '<article class="col-md-3 things-to-do-wrapper">'
 					+'		<div class="package-wrapper">'
 					+'			<button id="Room" onclick="joinGame(\''+res+'\');">'
-					+'				<div class="roomname" style="text-align: center"><img id="miniMap" src="image/miniMap.png"></div>'	
+					+'				<div class="roomname" style="text-align: center"><img id="miniMap" src="miniMap.png"></div>'	
 					+'				<div class="countdown">'+ second +'</div>'			
 					+'				<div class="membersCnt" id="membersCnt">'+ memCnt +'/'+ playerMax +'</div>'
 					+'			</button>'
@@ -328,7 +329,7 @@
 
 	<!--hero Section-->
 	<section id="hero">
-		<img src="src/assets/images/things-to-do/city.jpg" class="things-to-do" alt="">
+		<img src="city.jpg" class="things-to-do" alt="">
 		<h2>Welcome to BlockMable</h2>
 	</section>	
 	<!-- /.hero -->
